@@ -1,6 +1,6 @@
 # Data Proxy project
 
-Under the requests of AI team, we are committed to help them to prepare data in their desired data format. 
+Under the requests of AI team, we are committed to design and implement the data proxy for control kit, which helps to create pivot table of wave counter and point ID with the value of point values. 
 
 ## Introduction
 
@@ -30,13 +30,24 @@ AI team \(control kit\) or all other applications that require pivot tables.
 2. Provide the latest point values from extraction in the format of time-series. 
 3. Maintain the fresh data and remove the outdated point values from NoSQL collections.
 
+## General Workflow
+
+![](.gitbook/assets/image%20%283%29.png)
+
+### Details
+
+1. Users [provided configuration](data-proxy-project.md#usage-examples) must be written into ._/prototype/service\_creator/service\_CONFIGURATIONS.json_
+2. \_\_
+
 ## Usage/Examples
 
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
 
-The 
+There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some **default** settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration. 
 
-#### Configuration Example
+### Public Configuration Example
+
+It is more intuitional to explain with an example. In the one below, which is a typical example of how the configuration structure look like. 
 
 `"1":{   
     "service_name":"TOR-BGO-150KingW",   
@@ -54,6 +65,8 @@ The
     "sleep_time":5,   
     "mongo_to_local":false   
 }`
+
+The module is also equipped with the ability to create multiple service at one cycle, the only thing that needs extra care to make it happen is that, inside the service\_CONFIGURATION.json file, 
 
 ## Functionalities
 
@@ -82,5 +95,10 @@ Due to the consideration of quality assurance, we made several tests to ensure t
 
 ## Issues
 
+The execution of program may encounter with the potential issues:
+
+1. After creation of the system service, the service is still **Inactive/disabled** 
+   1. **Solution:** sudo systemctl restart your\_service_\__name.service
+2. 
 ## Collaborators
 
