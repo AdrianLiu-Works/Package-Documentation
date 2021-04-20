@@ -32,18 +32,21 @@ AI team \(control kit\) or all other applications that require pivot tables.
 
 ## General Workflow
 
+### Workflow
+
 ![](.gitbook/assets/image%20%283%29.png)
 
 ### Details
 
 1. Users [provided configuration](data-proxy-project.md#usage-examples) must be written into ._/prototype/service\_creator/service\_CONFIGURATIONS.json_
-2. \_\_
+2. The destination of copying source code files are the ["path"](data-proxy-project.md#public-configuration-example) in the configuration, this will create a new folder and will merge the user-provided configuration file \(public\) with the default configuration in the program \(private\).
+3. The package is implementing .env technique to securely retrieve the database passwords. Since it wouldn't be changed for a long period of time, it will be set as default \(in private configuration\)
 
 ## Usage/Examples
 
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
 
-There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some **default** settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration. 
+There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some default settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration \(service\_CONFIGURATION.json\). 
 
 ### Public Configuration Example
 
@@ -66,7 +69,14 @@ It is more intuitional to explain with an example. In the one below, which is a 
     "mongo_to_local":false   
 }`
 
-The module is also equipped with the ability to create multiple service at one cycle, the only thing that needs extra care to make it happen is that, inside the service\_CONFIGURATION.json file, 
+The module is also equipped with the ability to create multiple service at one cycle, the only thing that needs extra care to make it happen is that, inside the service\_CONFIGURATION.json file, the user is allowed to 
+
+1. define multiple key, such as "1", "2"... etc, whose name does not represent any meaning. 
+2. Then, insert any attributes that mentioned in the above example
+3. Change them according to the user's needs, 
+4. organize them to a well-formatted json file. 
+
+After that, the service creator system service will take care of it and establish the new system service. 
 
 ## Functionalities
 
