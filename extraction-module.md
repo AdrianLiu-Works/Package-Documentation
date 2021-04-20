@@ -81,7 +81,7 @@ The extraction package supports the dual mode of extraction. In particular, it a
 
 One thing that requires extra concern is the joint extraction list. Under the circumstance of lack of a joint extraction list that prepared by Data Mapping team, we shall merge the individual extraction list together by the key of "point address", e.g. _/Drivers/BacnetNetwork/$31$2d10/points/CLG$2dMAXFLOW_. Among them, the conventional extraction list is preserved in the file format of csv that provided by Data Mapping team and haystack extraction list could be found at hs points of each project in AWS database.
 
-In another case, the joint extraction list is prepared by Data Mapping team and could be directly read as data frame and do the initialization of extraction. 
+In another case, the joint extraction list is prepared by Data Mapping team and could be directly read as data frame and do the [initialization of extraction](extraction-module.md#init_extraction). 
 
 ### Single mode
 
