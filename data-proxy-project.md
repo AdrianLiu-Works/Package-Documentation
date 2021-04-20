@@ -41,12 +41,44 @@ The
 `"1":{   
     "service_name":"TOR-BGO-150KingW",   
     "wave_counter_threshold": 1617753611,   
-    "delete_old_value": 7, "monitory_name_kept": ["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"], "monitory_dbName": "script_n", "interval_dbName": "interval", "TABLES": { "ext_cycle": "extraction_cycle", "measures": "TL_measures"}, "database": "TOR-BGO-150KingW", "path":"/home/brainbox/DATA_PROXY/TOR-BGO-150KingW/src", "server":"awsdb.brainboxai.net", "sleep_time":5, "mongo_to_local":false   
+    "delete_old_value": 7,   
+    "monitory_name_kept":["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"],   
+    "monitory_dbName": "script_n",   
+    "interval_dbName": "interval",   
+    "TABLES": {   
+          "ext_cycle": "extraction_cycle",   
+          "measures": "TL_measures"},   
+    "database": "TOR-BGO-150KingW",   
+    "path":"/home/brainbox/DATA_PROXY/TOR-BGO-150KingW/src",   
+    "server":"awsdb.brainboxai.net",   
+    "sleep_time":5,   
+    "mongo_to_local":false   
 }`
 
 ## Functionalities
 
+This section will cover all the functionalities that this module offers, the order of appearance is also the order of execution. 
+
+### Automatically create system service
+
+### Fetch data from Extraction Cycle table
+
+### Match the wave counter from Extraction Cycle to Measures table 
+
+### Prepare the point values 
+
+### Push matched point values to AWS/Local Mongo DB
+
 ## Environments
+
+## Passed test cases
+
+Due to the consideration of quality assurance, we made several tests to ensure the performance as intended. The following are the list of test cases that this modules passed:
+
+1. Automatically generate a new system service for new project/building according to the provided configuration file
+2. Fetch point values from Measures table based on the the wave counter we captured from Extraction Cycle table
+3. Write fetched point values to AWS Mongo DB
+4. Write fetched point values to Local Mongo DB
 
 ## Issues
 
