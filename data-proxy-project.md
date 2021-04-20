@@ -40,7 +40,9 @@ The
 
 `"1":{   
     "service_name":"TOR-BGO-150KingW",   
-    "wave_counter_threshold": 1617753611, "delete_old_value": 7, "monitory_name_kept": ["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"], "monitory_dbName": "script_n", "interval_dbName": "interval", "TABLES": { "ext_cycle": "extraction_cycle", "measures": "TL_measures"}, "database": "TOR-BGO-150KingW", "path":"/home/brainbox/DATA_PROXY/TOR-BGO-150KingW/src", "server":"awsdb.brainboxai.net", "sleep_time":5, "mongo_to_local":false }`
+    "wave_counter_threshold": 1617753611,   
+    "delete_old_value": 7, "monitory_name_kept": ["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"], "monitory_dbName": "script_n", "interval_dbName": "interval", "TABLES": { "ext_cycle": "extraction_cycle", "measures": "TL_measures"}, "database": "TOR-BGO-150KingW", "path":"/home/brainbox/DATA_PROXY/TOR-BGO-150KingW/src", "server":"awsdb.brainboxai.net", "sleep_time":5, "mongo_to_local":false   
+}`
 
 ## Functionalities
 
