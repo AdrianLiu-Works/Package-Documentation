@@ -61,16 +61,23 @@ After the submissions please run the **submit\_request.py** file with **brainbox
 
 Required fields of _request.json -_ the configuration file of user:
 
-* “wave\_counter\_threshold”: {unix value from the time data is supposed to be gathered from mysql},
-* “delete\_old\_value”:               {number of the days data will be kept in collections},
-* “monitory\_name\_kept”:       {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects}
+* “wave\_counter\_threshold”: 
+  * {unix value from the time data is supposed to be gathered from mysql},
+* “delete\_old\_value”:               
+  * {number of the days data will be kept in collections},
+* “monitory\_name\_kept”:       
+  * {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects}
 
  ![](.gitbook/assets/image%20%284%29.png) 
 
-* “measures”: {measures table name could be TL\_measures and hs\_measures}
-* “database”: {name of the database},
-* “server”:{database server address},
-* “sleep\_time”:{secs data will be sync between mysql and Mongo DB}
+* “measures”: 
+  * {measures table name could be TL\_measures and hs\_measures}
+* “database”: 
+  * {name of the database},
+* “server”:
+  * {database server address},
+* “sleep\_time”:
+  * {secs data will be sync between mysql and Mongo DB}
 
 After running the program,request.json will be reinitiated to default values: [default request.json](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/request_default.json)
 
