@@ -46,6 +46,50 @@ AI team \(control kit\) or all other applications that require pivot tables.
 
 ## Usage/Examples
 
+### Quick start
+
+#### How to initiate DB proxy for one project: <a id="how-to-initiate-db-proxy-for-one-project"></a>
+
+The program has an active running service named _DB\_PROXY\_Service\_Creator.service_ that checks new request for projects. A dictionary based request is needed to be created similar to example availble in this repo.
+
+[Example of initiation request](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/request.json)
+
+after the sumbission please run the **submit\_request.py** file with **brainbox permission** at the same directory. [Source code for submit\_request.py](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/submit_request.py)
+
+Required fields:
+
+* “wave\_counter\_threshold”: {unix value from the time data is supposed to be gathered from mysql},
+* “delete\_old\_value”: {number of the days data will be kept in collections},
+* “monitory\_name\_kept”: {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects},[![what names looks like ](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/EXT_CYCLE.png)](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/EXT_CYCLE.png)
+* “measures”: {measures table name could be TL\_measures and hs\_measures}
+* “database”: {name of the database},
+* “server”:{database server address},
+* “sleep\_time”:{secs data will be sync between mysql and Mongo DB}
+
+After running the program,request.json will be reinitiated to default values: [default request.json](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/request_default.json)
+
+**Don’t forget to remove \_ from the keys to use it next time ;\)**
+
+DB\_PROXY\_service\_creator program will take the new request and creates a new project at /home/brainbox/DB\_PROXY/{database} and run a background service with a name DB_PROXY_{database}.service.
+
+* you could check the service to insure project runs smoothly :\)
+
+Now the db proxy for project starts working and gets infromation from mysql and pushes the value into collections as pivot tables in MongoDB.
+
+#### how to access Mongo DB data: <a id="how-to-access-mongo-db-data"></a>
+
+The Handler folder supports neccessary functionality to fetch information from MongoDB.
+
+[Mongo DB Handler](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/handler)
+
+Mongo db handler requires environ file that includes credentials for connection to Mongo DB. This piece of information will be shared through LastPass. The .env file format is as follow: SERVER=“{mongo db server address}” USERNAME=“{mongo db username}” PASSWORD=“{mongo db password}” PORT= {mongo db port number}
+
+For unit test: there are some examples some commented some not ! in the [mongo\_handler\_cloud.py](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/handler/mongo_handler_cloud.py) so that by running the code it should provide similar following results: [![unit test](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/handler_screenshot.png)](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/handler_screenshot.png)
+
+
+
+
+
 Please refer to the [Wiki page ](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/wiki/How-to-use%3F)for a quick start of using this module. The following is the detailed version for better understanding and future improvement
 
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
