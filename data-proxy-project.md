@@ -43,8 +43,9 @@ AI team \(control kit\) or all other applications that require pivot tables.
 ### Details
 
 1. Users [provided configuration](data-proxy-project.md#usage-examples) must be written into ._/prototype/submit\_request/request.json_
-2. The destination of copying source code files are the ["path"](data-proxy-project.md#public-configuration-example) in the configuration, this will create a new folder and will merge the user-provided configuration file \(public\) with the default configuration in the program \(private\).
-3. The package is implementing .env technique to securely retrieve the database passwords. Since it wouldn't be changed for a long period of time, it will be set as default \(in private configuration\)
+2. After completing _request.json_, it's mandatory to run _submit\_requst.py_
+3. The destination of copying source code files are the ["path"](data-proxy-project.md#public-configuration-example) in the configuration, this will create a new folder and will merge the user-provided configuration file \(public\) with the default configuration in the program \(private\).
+4. The package is implementing .env technique to securely retrieve the database passwords. Since it wouldn't be changed for a long period of time, it will be set as default \(in private configuration\)
 
 ## Usage/Examples
 
@@ -56,13 +57,13 @@ The program has an active running service named _DB\_PROXY\_Service\_Creator.ser
 
 [Example of initiation request](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/request.json)
 
-after the sumbission please run the **submit\_request.py** file with **brainbox permission** at the same directory. [Source code for submit\_request.py](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/submit_request.py)
+After the submissions please run the **submit\_request.py** file with **brainbox permission** at the same directory. [Source code for submit\_request.py](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/submit_request.py)
 
-Required fields:
+Required fields of _request.json -_ the configuration file of user:
 
 * “wave\_counter\_threshold”: {unix value from the time data is supposed to be gathered from mysql},
-* “delete\_old\_value”: {number of the days data will be kept in collections},
-* “monitory\_name\_kept”: {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects}
+* “delete\_old\_value”:               {number of the days data will be kept in collections},
+* “monitory\_name\_kept”:       {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects}
 
  ![](.gitbook/assets/image%20%284%29.png) 
 
