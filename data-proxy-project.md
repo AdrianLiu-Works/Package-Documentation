@@ -44,6 +44,8 @@ AI team \(control kit\) or all other applications that require pivot tables.
 
 ## Usage/Examples
 
+Please refer to the [Wiki page ](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/wiki/How-to-use%3F)for a quick start of using this module. The following is the detailed version for better understanding and future improvement
+
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
 
 There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some default settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration \(service\_CONFIGURATION.json\). 
@@ -52,22 +54,15 @@ There are two types of configurations, one private \(proxy\_config.json\) and an
 
 It is more intuitional to explain with an example. In the one below, which is a typical example of how the configuration structure look like. 
 
-`"1":{   
-    "service_name":"TOR-BGO-150KingW",   
-    "wave_counter_threshold": 1617753611,   
-    "delete_old_value": 7,   
-    "monitory_name_kept":["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"],   
-    "monitory_dbName": "script_n",   
-    "interval_dbName": "interval",   
-    "TABLES": {   
-          "ext_cycle": "extraction_cycle",   
-          "measures": "TL_measures"},   
-    "database": "TOR-BGO-150KingW",   
-    "path":"/home/brainbox/DATA_PROXY/TOR-BGO-150KingW/src",   
-    "server":"awsdb.brainboxai.net",   
-    "sleep_time":5,   
-    "mongo_to_local":false   
-}`
+```text
+"wave_counter_threshold": 1617753611,
+"delete_old_value": 7,
+"monitory_name_kept": ["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"],
+"measures": "TL_measures",
+"database": "TOR-BGO-150KingW",
+"server":"awsdb.brainboxai.net",
+"sleep_time":5
+```
 
 The module is also equipped with the ability to create multiple service at one cycle, the only thing that needs extra care to make it happen is that, inside the service\_CONFIGURATION.json file, the user is allowed to 
 
