@@ -2,6 +2,8 @@
 
 Under the requests of AI team, we are committed to design and implement the data proxy for control kit, which helps to create pivot table of wave counter and point ID with the value of point values. 
 
+_**Note: For a quick start of using this module, please refer to**_ [_**Quick start**_](data-proxy-project.md#quick-start) _**section**_
+
 ## Introduction
 
 ### What?
@@ -36,11 +38,11 @@ AI team \(control kit\) or all other applications that require pivot tables.
 
 ![Flow of this module](.gitbook/assets/image%20%283%29.png)
 
-![Flow from bigger picture](.gitbook/assets/image%20%284%29.png)
+![Flow from bigger picture](.gitbook/assets/image%20%286%29.png)
 
 ### Details
 
-1. Users [provided configuration](data-proxy-project.md#usage-examples) must be written into ._/prototype/service\_creator/service\_CONFIGURATIONS.json_
+1. Users [provided configuration](data-proxy-project.md#usage-examples) must be written into ._/prototype/submit\_request/request.json_
 2. The destination of copying source code files are the ["path"](data-proxy-project.md#public-configuration-example) in the configuration, this will create a new folder and will merge the user-provided configuration file \(public\) with the default configuration in the program \(private\).
 3. The package is implementing .env technique to securely retrieve the database passwords. Since it wouldn't be changed for a long period of time, it will be set as default \(in private configuration\)
 
@@ -60,7 +62,10 @@ Required fields:
 
 * “wave\_counter\_threshold”: {unix value from the time data is supposed to be gathered from mysql},
 * “delete\_old\_value”: {number of the days data will be kept in collections},
-* “monitory\_name\_kept”: {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects} ![](.gitbook/assets/image%20%285%29.png) 
+* “monitory\_name\_kept”: {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects}
+
+ ![](.gitbook/assets/image%20%284%29.png) 
+
 * “measures”: {measures table name could be TL\_measures and hs\_measures}
 * “database”: {name of the database},
 * “server”:{database server address},
@@ -84,19 +89,17 @@ The Handler folder supports neccessary functionality to fetch information from M
 
 Mongo db handler requires environ file that includes credentials for connection to Mongo DB. This piece of information will be shared through LastPass. The .env file format is as follow: SERVER=“{mongo db server address}” USERNAME=“{mongo db username}” PASSWORD=“{mongo db password}” PORT= {mongo db port number}
 
-For unit test: there are some examples some commented some not ! in the [mongo\_handler\_cloud.py](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/handler/mongo_handler_cloud.py) so that by running the code it should provide similar following results: [![unit test](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/handler_screenshot.png)](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/handler_screenshot.png)
+For unit test: there are some examples some commented some not ! in the [mongo\_handler\_cloud.py](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/handler/mongo_handler_cloud.py) so that by running the code it should provide similar following results: ![](.gitbook/assets/image%20%285%29.png) 
 
 
 
-
-
-Please refer to the [Wiki page ](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/wiki/How-to-use%3F)for a quick start of using this module. The following is the detailed version for better understanding and future improvement
+### A bit detailed
 
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
 
 There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some default settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration \(request.json\). 
 
-### Public Configuration Example
+#### Public Configuration Example
 
 It is more intuitional to explain with an example. In the one below, which is a typical example of how the configuration structure look like. 
 
