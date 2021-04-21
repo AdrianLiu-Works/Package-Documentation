@@ -34,7 +34,9 @@ AI team \(control kit\) or all other applications that require pivot tables.
 
 ### Workflow
 
-![](.gitbook/assets/image%20%283%29.png)
+![Flow of this module](.gitbook/assets/image%20%283%29.png)
+
+![Flow from bigger picture](.gitbook/assets/image%20%284%29.png)
 
 ### Details
 
@@ -48,30 +50,27 @@ Please refer to the [Wiki page ](https://git.brainboxai.net/DataStreams/DATA_PRO
 
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
 
-There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some default settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration \(service\_CONFIGURATION.json\). 
+There are two types of configurations, one private \(proxy\_config.json\) and another for public \(configurable to the program\). The private one majorly covered some default settings, such as the service creator name and debug mode \(only for developer of this module\), in other words, those are not supposed to be a concern for the end-user. Thus, in this section, we will focus on the public configuration \(request.json\). 
 
 ### Public Configuration Example
 
 It is more intuitional to explain with an example. In the one below, which is a typical example of how the configuration structure look like. 
 
 ```text
-"wave_counter_threshold": 1617753611,
+{"wave_counter_threshold": 1617753611,
 "delete_old_value": 7,
 "monitory_name_kept": ["Extraction_1_dev_a","Extraction_2_dev_a","Extraction_3_dev_a"],
 "measures": "TL_measures",
 "database": "TOR-BGO-150KingW",
 "server":"awsdb.brainboxai.net",
-"sleep_time":5
+"sleep_time":5}
 ```
 
-The module is also equipped with the ability to create multiple service at one cycle, the only thing that needs extra care to make it happen is that, inside the service\_CONFIGURATION.json file, the user is allowed to 
+1. Insert/modify any attributes that mentioned in the above example
+2. Change them according to the user's needs, 
+3. organize them to a well-formatted json file. 
 
-1. define multiple key, such as "1", "2"... etc, whose name does not represent any meaning. 
-2. Then, insert any attributes that mentioned in the above example
-3. Change them according to the user's needs, 
-4. organize them to a well-formatted json file. 
-
-After that, the service creator system service will take care of it and establish the new system service. 
+After that, run the **submit\_request.py**, the service creator system service will take care of it and establish the new system service. 
 
 ## Functionalities
 
@@ -89,6 +88,15 @@ This section will cover all the functionalities that this module offers, the ord
 
 ## Environments
 
+There are several packages needed to perform duties:
+
+1. [pymongo](https://pypi.org/project/pymongo/)
+2. [sqlalchemy](https://pypi.org/project/SQLAlchemy/)
+3. [environs](https://pypi.org/project/environs/)
+4. [pymysql](https://pypi.org/project/PyMySQL/)
+
+All available in the python pip install library
+
 ## Passed test cases
 
 Due to the consideration of quality assurance, we made several tests to ensure the performance as intended. The following are the list of test cases that this modules passed:
@@ -97,6 +105,7 @@ Due to the consideration of quality assurance, we made several tests to ensure t
 2. Fetch point values from Measures table based on the the wave counter we captured from Extraction Cycle table
 3. Write fetched point values to AWS Mongo DB
 4. Write fetched point values to Local Mongo DB
+5. Transfer user provided configuration files to its desired destination
 
 ## Issues
 
@@ -104,6 +113,12 @@ The execution of program may encounter with the potential issues:
 
 1. After creation of the system service, the service is still **Inactive/disabled** 
    1. **Solution:** sudo systemctl restart your\_service_\__name.service
-2. 
+
+Any other issues occurred, please use this [form ](https://app.asana.com/0/1188271036483121/overview)to submit a ticket
+
 ## Collaborators
+
+[Farzam](https://git.brainboxai.net/Farzam)
+
+[Adrian](https://git.brainboxai.net/adrian)
 
