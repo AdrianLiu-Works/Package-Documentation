@@ -60,7 +60,7 @@ Required fields:
 
 * “wave\_counter\_threshold”: {unix value from the time data is supposed to be gathered from mysql},
 * “delete\_old\_value”: {number of the days data will be kept in collections},
-* “monitory\_name\_kept”: {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects},[![what names looks like ](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/EXT_CYCLE.png)](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/image/EXT_CYCLE.png)
+* “monitory\_name\_kept”: {list of extraction packages that correspond to one projects result in creation of multiple collections per one projects} ![](.gitbook/assets/image%20%285%29.png) 
 * “measures”: {measures table name could be TL\_measures and hs\_measures}
 * “database”: {name of the database},
 * “server”:{database server address},
