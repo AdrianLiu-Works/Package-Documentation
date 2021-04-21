@@ -79,17 +79,17 @@ Required fields of _request.json -_ the configuration file of user:
 * “sleep\_time”:
   * {secs data will be sync between mysql and Mongo DB}
 
-After running the program,request.json will be reinitiated to default values: [default request.json](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/request_default.json)
+After running the program, _request.json_ will be reinitiated to default values: [default request.json](https://git.brainboxai.net/DataStreams/DATA_PROXY_FOR_AI_MODELS/src/branch/master/submit_request/request_default.json)
 
 **Don’t forget to remove \_ from the keys to use it next time ;\)**
 
-DB\_PROXY\_service\_creator program will take the new request and creates a new project at /home/brainbox/DB\_PROXY/{database} and run a background service with a name DB_PROXY_{database}.service.
+_DB\_PROXY\_service\_creator_ program will take the new request and creates a new project at **/home/brainbox/DB\_PROXY/{database}** and run a background service with a name _DB\_PROXY\_{database}.service._
 
-* you could check the service to insure project runs smoothly :\)
+* you could check the service to insure project runs smoothly :\) \(systemctl status _DB\_PROXY\_{database}.service_\)
 
-Now the db proxy for project starts working and gets infromation from mysql and pushes the value into collections as pivot tables in MongoDB.
+Now the db proxy for project starts working and gets information from MySQL and pushes the value into collections as pivot tables in MongoDB.
 
-#### how to access Mongo DB data: <a id="how-to-access-mongo-db-data"></a>
+#### How to access Mongo DB data: <a id="how-to-access-mongo-db-data"></a>
 
 The Handler folder supports neccessary functionality to fetch information from MongoDB.
 
@@ -101,7 +101,7 @@ For unit test: there are some examples some commented some not ! in the [mongo\_
 
 
 
-### A bit detailed
+### A bit details
 
 The module is embedded with one of the most important features - create service for new project/building automatically. In order to let the program perform its duties, it is strictly required that the configurations are set properly. 
 
@@ -109,7 +109,7 @@ There are two types of configurations, one private \(proxy\_config.json\) and an
 
 #### Public Configuration Example
 
-It is more intuitional to explain with an example. In the one below, which is a typical example of how the configuration structure look like. 
+It is more intuitional to explain with an example. In the one below, which is a typical example of how the public configuration structure look like. 
 
 ```text
 {"wave_counter_threshold": 1617753611,
@@ -121,11 +121,16 @@ It is more intuitional to explain with an example. In the one below, which is a 
 "sleep_time":5}
 ```
 
-1. Insert/modify any attributes that mentioned in the above example
-2. Change them according to the user's needs, 
-3. organize them to a well-formatted json file. 
+#### General steps:
 
-After that, run the **submit\_request.py**, the service creator system service will take care of it and establish the new system service. 
+1. Open _request.json_
+2. Modify any necessary attributes that mentioned in the above example
+3. Organize them to a well-formatted json file and write back to request.json
+4. Run _submit\_request.py_
+5. Check the message printed, 
+   1. if okay, check systemctl status _DB\_PROXY\_{database}.service_
+   2. if not okay, it's most likely due to the configuration format error, recheck your submitted request in the json file
+6. The service creator system service will take care of it and establish the new system service. 
 
 ## Functionalities
 
