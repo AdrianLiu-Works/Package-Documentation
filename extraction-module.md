@@ -59,6 +59,8 @@ This module will handle the scenario of needs of reading, parsing and pushing up
 
 #### Flowchart
 
+![](.gitbook/assets/image%20%287%29.png)
+
 #### Highlight Points:
 
 1. As stated in [Overview](extraction-module.md#overview), Extraction supports mode switching and dual mode
