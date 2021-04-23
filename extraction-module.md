@@ -80,9 +80,39 @@ In another case, the joint extraction list is prepared by Data Mapping team and 
 
 ### Single mode
 
+As its mode name implies, this is only for extraction for one single mode, either Haystack or Conventional approach. The difference is they may have different extraction list, and push to different tables \(haystack: hs\_measures; conventional: TL\_measures\). 
+
 ### Rich report
 
+### Memory garbage collection
+
 ### Massive use of Redis
+
+### Immediate effect of config change
+
+### Debug mode
+
+### Push to extraction cycle table even if extraction failed
+
+### Rich options 
+
+#### Write to database
+
+#### Delete after read
+
+#### Points with status
+
+1. Whether or not write points with status to database, default at NO, in other words, all points come with status \(abnormal\) will collected into the **detailed report** column in **extraction cycle** table by default
+2. Options to choose which status write to database and rest of them will be kept in the **detailed report** column in **extraction cycle** table 
+3. Options to choose which columns of status points kept into detailed report: default at \[point value, status, URI, point id\]
+
+### Extraction module duties
+
+
+
+
+
+
 
 ## Output
 
