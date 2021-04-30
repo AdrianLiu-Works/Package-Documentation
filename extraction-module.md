@@ -28,8 +28,14 @@ This project is massively applied with Redis database, so it's mandatory to have
 
 A list of required external packages:
 
-1. psutil
-2. **Workflow**
+1. redis
+2. psutil
+3. environ
+4. pandas
+5. pymysql
+6. sqlalchemy
+
+## Modules
 
 The Extraction package includes two modules: Init\_Extraction and Extraction, both are able to run independently but need small modifications. The following description will speak from the perspective of a whole.
 
@@ -68,6 +74,14 @@ This module will handle the scenario of needs of reading, parsing and pushing up
 3. All extractions modules, say, extraction\_1 and extraction2, are run as independent service in tgw VM, the [wave\_counter ](extraction-module.md#wave-counter)will be different but close enough. 
 4. [Extraction cycle](extraction-module.md#extraction-cycle) table will log all the information related to this extraction loop, either success or fail. One crucial point is the wave counter in extraction cycle table match the data in measures.
 
+## Quick Start
+
+Install modules
+
+Change configuration
+
+Reinitialize the extraction
+
 ## Functionalities
 
 ### Dual mode
@@ -84,15 +98,49 @@ As its mode name implies, this is only for extraction for one single mode, eithe
 
 ### Rich report
 
+In this module, we are committed to log program running details as much as possible. It would be one of the ways to collect data for the future integration of Machine Learning application and Software Engineer, such as Smart Operation project.
+
+The examples that covered are:
+
+1. program running time in secs
+2. whether or not the extraction is success
+3. the number of normal/status updates
+4. which extraction mode is currently on
+5. The offset between creation of updates and creation of database row
+6. CPU/memory consumption
+7. updates with status, if any
+8. current cycle configuration
+
 ### Memory garbage collection
+
+The execution of program is in the format of hierarchy. By this, it means it was implemented with multiple levels of calling modules. Particularly, there is a main script \(e.g. EXTRACTION\_1.py\) that takes care of running the script runner \(e.g. extraction.py\). In this design, the main script will be embedded with a **while True** loop, and script runner will contain a runner\_main function that serves as the caller of main business logic of the present script, which equips a **for loop** and maximum iteration number in the configuration file. 
+
+By doing so, after running out of the for loop of script runner, it will exit itself to clean up all the allocated memory in order to achieve the goal of the garbage collection operation. In the next cycle, the program will go back to main script while loop, and start another script runner.  
 
 ### Massive use of Redis
 
-### Immediate effect of config change
+As you may notice, this is a project that massively applied Redis, which is a memory-based database with extremely fast read/write ability.
+
+Two major applications:
+
+1. Use of redis database to store temporary data from our driver, extraction list, module status, etc
+2. Use of redis channel to listen and collect data from another endpoint, in specific, the parsed data will be pushed to redis channel and [Data Smith](extraction-module.md#data-smith) module will take this data and push to its requested database
+
+### Immediate effect of configuration change
+
+This applies to every modules involved in this project, extraction, init\_extration, client, etc. 
+
+The extraction configuration file changes would be immediately effect to the production, for example, while one of the attribute modified in configuration file, the [init\_extraction module](extraction-module.md#modules) will read it and write to redis, which will later be consumed by other program, same for client module.  
 
 ### Debug mode
 
+This enables the maintainer debug the module with print almost all information in the pipeline, so that it's time-saving to manually print the message of where the error occurred.
+
+With the debug mode on, the module will output the data in every major turning points and give a heads-up for every details for debugging. 
+
 ### Push to extraction cycle table even if extraction failed
+
+Even if the extraction of points failed, the module is able to push the error message to the database, along with the extraction mode, 
 
 ### Rich options 
 
@@ -108,7 +156,13 @@ As its mode name implies, this is only for extraction for one single mode, eithe
 
 ### Extraction module duties
 
+### Heart beat/modules status
 
+code to reboot
+
+### Data smith pushing by configurable size
+
+### Auto check the changes in configuration file
 
 
 
@@ -129,6 +183,10 @@ This is the primary, centralized Redis database for storing all communication in
 #### Project Redis
 
 This is designed for each of project/building, which means that for each of project, one Redis object will be available for each to place any related data with a controller id as prefix, such as controllerID\_current\_time. It is beneficial for maintenance of each project/building as well as modules.
+
+### Data Smith
+
+Part of LEA, an application of redis channel, listen to the specific channel and then push the received data to desired database table.
 
 ### Initialization
 
