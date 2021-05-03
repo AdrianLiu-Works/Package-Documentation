@@ -76,11 +76,53 @@ This module will handle the scenario of needs of reading, parsing and pushing up
 
 ## Quick Start
 
-Install modules
+### Install modules
 
-Change configuration
+The installation follows the general steps:
 
-Reinitialize the extraction
+1. Download the code: git clone [https://git.brainboxai.net/DataStreams/LEA\_IO\_modules\_Tridium](https://git.brainboxai.net/DataStreams/LEA_IO_modules_Tridium)    
+   1. enter your git username and password
+2. Change the configuration file adaptively 
+   1. list of configuration files:
+      1. **InitExtraction/extraction\_config.json**: all necessary attributes for running the extraction modules
+      2. **DataSmith\_\#/DS\_config.json:** majorly use redis channel name, the preloaded message redis name, and the size of each pushing to database
+      3. **utils/.env**: the password and username of the database
+      4. **utils/config.json**: the configuration required for connecting to database, such as table names, database name and server name
+      5. **CLIENT\_CONFIGURATION.json**: the extraction mode is controller here; also the controller ids in this project are included here \(a must; otherwise the program won't executed properly\). 
+      6. **service\_creator/service**_**\_**_**CONFIGURATION.json**: the configurations for creating the system service for running the modules on background. Support multiple services creation.
+3. Set up the Redis socket server:
+   1. No need to change anything in this step
+   2. Simply run _redisConfiguration/prepare\_redis\_conf.py_ 
+   3. \(when there is a need to stop such server, run _redisConfiguration/steop\_redis\_service.py_, this will not affect the data that already stored in redis database\)
+4. Once you feel confident about the configurations setting, feel free to use sudoer permission to run _service\_creator/service\_creator.py_
+5. After creation of service, it's necessary to do extra quality assurance, which is use command line of `sudo systemctl status yourservicename.service` to check if the service is up and run, in case of failure, run `sudo systemctl restart yourservicename.service`, and recheck the status. If still failed, double check your configurations file.
+
+### Frequent scenarios and its measures
+
+This section assumes the related service is running on background.
+
+#### Reinit extraction
+
+In _InitExtraction/extraction\_config.json_, swith attribute of "init" from false to **true,** save and exit. The service of _InitEXTRACTION_ will take of the changes and proceed to reinit the extraction.
+
+#### Change of extraction mode
+
+Under CLIENT\_CONFIGURATION.json file, there are two attributes: 
+
+1. haystack\_ext\_mode: boolean; controls if the extraction is on [haystack extraction mode](extraction-module.md#single-mode)
+2. dual\_ext\_mode: boolean; controls if the extraction is on [dual extraction mode](extraction-module.md#dual-mode)
+
+Please note that, the program will first check if we are in dual extraction mode, if yes, it will omit if haystack extraction mode is on or off. Likewise, if dual is off, then the program will check which single mode we are directing, haystack or conventional.
+
+#### Debug mode
+
+
+
+#### Change of extraction module duties
+
+#### Change of pushing to database size
+
+#### Extraction only for locally, stop pushing to database
 
 ## Functionalities
 
@@ -197,6 +239,7 @@ By meaning of _Initialization,_ it follows these steps:
    2. assign those chunks name, such as _"controllerID\_1", "controllerID\_COV\_2",_ varied by the type of extraction \(ordinary or COV\) 
    3. put everything together and send to our gateway redis and wait for driver to take and execute
    4. Another name for the above procedures is **Subscription -** in short, tell our driver we want those points value to be sent to us in a certain time interval.
+2. Reinit means we are refreshing the extraction list/subscription list and let the driver be aware of the latest ones. 
 
 ### Updates
 
@@ -211,6 +254,8 @@ The unix time of a timestamp
 The table that sits in database that responsible to log all the information related to this specific extraction cycle
 
 The wave counter will be used as a reference to match the updates data back to measures table
+
+### Heart beat
 
 ## Configurations
 
