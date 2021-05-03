@@ -122,7 +122,7 @@ Please note that, the program will first check if we are in dual extraction mode
 
 #### Change of pushing to database size
 
-#### Extraction only for locally, stop pushing to database
+#### Extraction only for locally, stop pushing to cloud database
 
 ## Functionalities
 
