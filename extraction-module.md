@@ -6,7 +6,7 @@ NOTES: 1. default behavior of write status to db, 2. comparison between previous
 
 Extraction module is part of the LEA ecosystem, which is committed to oversee the modules status of parse, release commands, extract points, and data pushing.
 
-Redis is massively used in this package and almost all of modules interact with Redis to gather the config information. However, instead of using one centralized Redis that served as Gateway Redis, we also implemented the Redis for each **Project/Building.** For each, all the information, say, updates, errors, discovery\_points, etc, will be transferred from the Gateway Redis to Project Redis once we receive from driver, via project CLIENT program, and all the operations will be conducted there. By doing this, transparency, distribution and maintainability are the vectors we seriously considered and improved.
+Redis is massively used in this package and almost all of modules interact with Redis to gather the config information. However, instead of using one centralized Redis that served as Gateway Redis, we also implemented the Redis for each **Project/Building.** For each, all the information, say, updates, errors, discovery\_points, etc, will be transferred from the Gateway Redis to Project Redis once we receive from driver, via [project CLIENT](extraction-module.md#project-redis) program, and all the operations will be conducted there. By doing this, transparency, distribution and maintainability are the vectors we seriously considered and improved.
 
 In addition, we accomplished the parallel reading, parsing and pushing [updates ](extraction-module.md#updates)by duplicating the extraction modules and creating services for each of them. In specific, say we have two extraction modules for project A, each will take half of updates, parse and push to database. The philosophy behind this design is that usually once a updates data coming, we parse them by one extraction module, but it will risk our virtual machine to go to a resource consumption peak and result in some consequential effects to other program if the updates are enormous. Using of parallelization technique directly help us eliminate this kind of possible negative influences by turning one huge peak to two smaller wave.
 
@@ -20,6 +20,8 @@ NOTE: Any terms that causes confusion, please refer to [Terminologies Section](e
 
 ### LEA
 
+LEA serves as a management layer to oversee the status of all services under this project. If one of the service failed and went down, the LEA will order this project to turn on the safe mode, which is directly off all services except Extraction and Data Smith. By doing so, LEA offers an additional safety layer to command the building. 
+
 ![](.gitbook/assets/image.png)
 
 ## Environments
@@ -28,18 +30,18 @@ This project is massively applied with Redis database, so it's mandatory to have
 
 A list of required external packages:
 
-1. redis
-2. psutil
-3. environ
-4. pandas
-5. pymysql
-6. sqlalchemy
+1. [redis](https://redis.io/)
+2. [psutil](https://pypi.org/project/psutil/)
+3. [environ](https://pypi.org/project/python-environ/)
+4. [pandas](https://pypi.org/project/pandas/)
+5. [pymysql](https://pypi.org/project/PyMySQL/)
+6. [sqlalchemy](https://pypi.org/project/SQLAlchemy/)
 
 ## Modules
 
-The Extraction package includes two modules: Init\_Extraction and Extraction, both are able to run independently but need small modifications. The following description will speak from the perspective of a whole.
+The Extraction package includes two modules: Init\_Extraction and Extraction, both are able to run independently. The following description will speak from the perspective of a whole.
 
-The **Init\_Extraction** module is the first of first module to execute in Extraction package, it takes the full responsibilities of **reading from config file and updating of every modules to Redis database**, and other modules, such as Extraction will read config from Redis rather than from file. Considering it as root, all other program takes information from here.
+The **Init\_Extraction** module is the first of first module to execute in Extraction package, it takes the full responsibilities of **reading from config file and updating of every modules to Redis database**, and other modules, such as Extraction will read config from Redis rather than from file. Considering it as root, all other programs are leaf - takes information from here.
 
 The **Extraction** module takes care of the duties of reading, parsing and pushing the updates that we received from Brainbox AI driver. The updates data originally sit on our [**Gateway** Redis](extraction-module.md#gateway-redis) for its corresponding controller id, and it will be taken by our **project** CLIENT program and push to our [**Project** Redis](extraction-module.md#project-redis). Starting from Project Redis with all piece of information related to this project, the extraction module is able to perform the parsing operation.
 
@@ -57,7 +59,7 @@ The init extraction module in Extraction package is designed in the below way.
 
 1. If the extraction list changes, which indicates we would like to subscribe/tell our driver there is some different points we would like to have visuals, we have to first send a command "unsubscribe\_all" to our driver via gateway redis, which informs our driver "we don't want you to send any points value back to us", then follows the steps mentioned [here ](extraction-module.md#initialization)to re-initialize the extraction
 2. Another circumstance that a re-initialization is required is at the time the extraction mode is switched \(convention, haystack, dual mode\), this has been automated in the extraction module. 
-3. This module is run as an independent service at tgw VM with infinite loop
+3. This module is run as an independent service at tgw VM
 
 ### Extraction
 
@@ -80,9 +82,9 @@ This module will handle the scenario of needs of reading, parsing and pushing up
 
 The installation follows the general steps:
 
-1. Download the code: git clone [https://git.brainboxai.net/DataStreams/LEA\_IO\_modules\_Tridium](https://git.brainboxai.net/DataStreams/LEA_IO_modules_Tridium)    
+1. Download the code: `git clone` [`https://git.brainboxai.net/DataStreams/LEA_IO_modules_Tridium`](https://git.brainboxai.net/DataStreams/LEA_IO_modules_Tridium)   
    1. enter your git username and password
-2. Change the configuration file adaptively 
+2. Change the [configuration file](extraction-module.md#configurations) adaptively 
    1. list of configuration files:
       1. **InitExtraction/extraction\_config.json**: all necessary attributes for running the extraction modules
       2. **DataSmith\_\#/DS\_config.json:** majorly use redis channel name, the preloaded message redis name, and the size of each pushing to database
@@ -94,7 +96,7 @@ The installation follows the general steps:
    1. No need to change anything in this step
    2. Simply run `python3 redisConfiguration/prepare_redis_conf.py` 
    3. \(when there is a need to stop such server, run _redisConfiguration/steop\_redis\_service.py_, this will not affect the data that already stored in redis database\)
-4. Once you feel confident about the configurations setting, feel free to use sudoer permission to run `python3 service_creator/service_creator.py`
+4. Once you feel confident about the configurations setting, don't forget to change the [service creator configuration](extraction-module.md#service-creator-1), and then feel free to use sudoer permission to run `sudo python3 service_creator/service_creator.py`
 5. After creation of service, it's necessary to do extra quality assurance, which is use command line of `sudo systemctl status yourservicename.service` to check if the service is up and run, in case of failure, run `sudo systemctl restart yourservicename.service`, and recheck the status. If still failed, double check your configurations file.
 
 ### Frequent scenarios and its measures
@@ -155,7 +157,7 @@ Among them:
 
 Under the needs of considering the resource consumption of virtual machine, we configurate the database pushing size to a reasonable number. For example, if the cpu and memory consumption is in a very high level, then we shall reduce the pushing size and let the program do the populating for multiple times in order to flatten the curve. 
 
-In each of Data Smith directory, database pushing size could be found at DS\_config.json, it varies by different data smith. 
+In each of Data Smith directory, database pushing size could be found at DS\_config.json, it could be varied by different data smith. 
 
 #### Extraction only for locally, stop pushing to cloud database
 
@@ -322,6 +324,8 @@ Normally, each point is supposed to be normal condition, as a result, the update
 
 ### Example
 
+#### Extraction
+
 Here is one example configuration for the office test bench TRIDIUM device:
 
 ```text
@@ -404,9 +408,66 @@ Here is one example configuration for the office test bench TRIDIUM device:
 }
 ```
 
+#### Client
+
+```text
+{
+    "CHUNK_LEN": 1000,
+    "client_name": "OFFICETEST",
+    "haystack_ext_mode":false,
+    "dual_ext_mode":false,
+    "refetch_ext_list":false,
+    "communication": {
+        "default_input": "in10",
+        "default_precision": 3,
+        "max_comm_failures": 3,
+        "max_message_interval": 120000
+    },
+    "user": "root",
+    "controller_id":["f6b9c110-83da-30ed-91ab-9c3dbd6b108e"],
+    "delete_after": true,
+    "expire_time":1000,
+    "debug_mode":false,
+    "max_itt":1000,
+    "HAYSTACK_EXT_COLS": [["objectType","obj_type"],["address","URI"],["controllerId","controller_id"]],
+    "CONVENTION_EXT_COLS": [["objectType","obj_type"],["address","URI"],["controllerId","c_id"]],
+    "HAYSTACK_NA_COLS": ["objectType_no","object_prop"],
+    "CONVENTION_NA_COLS": ["objectType_no","object_prop"],
+    "POINT_ID_EQ": {
+        "HAYSTACK": "id",
+        "CONVENTION": "DB_name"
+    },
+    "heart_beat_name":"CLIENT"
+}
+
+```
+
+### Service creator
+
+```text
+{ "prefix_name":"LEA",
+  "restart_secs":60,
+  "1":{
+    "service_name":"TEST_BENCH_CLIENT",
+    "script_name":"CLIENT",
+    "user": "brainbox",
+    "path":"/home/brainbox/TRIDIUM/LEA-MTL-OFFICETEST-TRIDIUM"
+  },
+  "2":
+  {
+    "service_name":"TEST_BENCH_EXTRACTION_1",
+    "script_name":"EXTRACTION_1",
+    "user": "brainbox",
+    "path":"/home/brainbox/TRIDIUM/LEA-MTL-OFFICETEST-TRIDIUM"
+  }
+}
+```
+
 ### Explain
 
 Bullet point explain
+
+#### Extraction
 
 ```text
 {
@@ -446,6 +507,27 @@ Bullet point explain
 
 ```
 
+#### Service Creator
+
+```text
+{ "prefix_name": [the prefix name of the service, say under what bigger framework, LEA?],
+  "restart_secs": [if failed, what's the frequency to restart the service],
+  "1":{
+    "service_name": [what is your main service name],
+    "script_name": [what is the main script that perform the duties, no ".py" needed],
+    "user": [this service under which VM username],
+    "path": [the absolute path to your script, without the script name and the last "/"]
+  },
+  "2":
+  {
+    "service_name": [same as above, could be used in creating multiple services at one time],
+    "script_name": [same as above],
+    "user": [same as above],
+    "path": [same as above]
+  }
+}
+```
+
 ## Issues
 
 ### Frequent encountered issues
@@ -456,7 +538,17 @@ Bullet point explain
    1. make sure you fill you updated/all controller id in CLIENT\_CONFIGURATION.json
 3. Extraction module works without any errors but there is no updates and extraction cycle information pushed to database
    1. wait for another interval of updates and then check the status and log of data smith
-4. Configurations are confidently appropriate, extraction failed: please address the issue by this [request form](https://form.asana.com/?hash=5081ac7e18e3c187f0e22118243d9992499d8afb9b84b69cc9a9150619a3f408&id=1188278485288441).
-5. 
+4. The number of updates is different with number of extraction/subscribe list
+   1. try to reinit the extraction again
+      1. if nothing changed
+         1. check if there is any error message sit on the redis c\_id\_errors attributes
+         2. check if there is an error in the extraction list
+         3. check the real subscription list from AX workplace
+5. Configurations are confidently appropriate, extraction failed: please address the issue by this [request form](https://form.asana.com/?hash=5081ac7e18e3c187f0e22118243d9992499d8afb9b84b69cc9a9150619a3f408&id=1188278485288441).
+
 ## Collaborators
+
+[Farzam](https://git.brainboxai.net/Farzam)
+
+[Adrian](https://git.brainboxai.net/adrian)
 
