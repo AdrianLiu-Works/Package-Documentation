@@ -116,9 +116,20 @@ Please note that, the program will first check if we are in dual extraction mode
 
 #### Debug mode
 
+The debug mode is available for modules:
 
+1. Client
+2. Init Extraction/ Extraction
+3. Data Smith
+
+Once this mode is on, the verbose will be maximized and print every details on each turning points.
 
 #### Change of extraction module duties
+
+By default, each extraction package is equipped with two extraction modules, and their responsibilities was split by the _extraction\_config.json,_ for example, 
+
+1. **"extraction1\_duties":\["f6b9c110-83da-30ed-91ab-9c3dbd6b108e\_updates\_300\_\[0-4\]"\]**
+2. **extraction2\_duties":\["f6b9c110-83da-30ed-91ab-9c3dbd6b108e\_updates\_300\_\[4-9\]"\],**
 
 #### Change of pushing to database size
 
