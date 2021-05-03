@@ -2,23 +2,15 @@
 
 ## Table of Contents
 
-### [Overview](extraction-module.md#overview-1)
-
-### [Environments](extraction-module.md#environments-1)
-
-### [Modules](extraction-module.md#modules-1)
-
-### [Quick start](extraction-module.md#quick-start-1)
-
-### [Functionalities](extraction-module.md#functionalities-1)
-
-### [Terminologies Definition](extraction-module.md#terminologies-definition-1)
-
-### [Configurations](extraction-module.md#configurations-1)
-
-### [Issues](extraction-module.md#issues-1)
-
-### [Collaborators](extraction-module.md#collaborators-1)
+* [Overview](extraction-module.md#overview-1)
+* [Environments](extraction-module.md#environments-1)
+* [Modules](extraction-module.md#modules-1)
+* [Quick start](extraction-module.md#quick-start-1)
+* [Functionalities](extraction-module.md#functionalities-1)
+* [Terminologies Definition](extraction-module.md#terminologies-definition-1)
+* [Configurations](extraction-module.md#configurations-1)
+* [Issues](extraction-module.md#issues)
+* [Collaborators](extraction-module.md#collaborators-1)
 
 ## Overview
 
