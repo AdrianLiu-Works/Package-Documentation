@@ -320,6 +320,8 @@ Normally, each point is supposed to be normal condition, as a result, the update
 
 ## Configurations
 
+### Example
+
 Here is one example configuration for the office test bench TRIDIUM device:
 
 ```text
@@ -402,83 +404,44 @@ Here is one example configuration for the office test bench TRIDIUM device:
 }
 ```
 
+### Explain
+
 Bullet point explain
 
 ```text
 {
-  "init": if we need to reinit the extraction,
-  "sleep_time": how long the program sleep for next cycle of extraction,
-  "retry_times": this give initextraction module chance to retry itself for unsubscribe all,
-  "ext_itt_max":the max itteration of one cycle in for loop,
-  "debug_mode": the debug mode boolean,
-  "write_to_db": the switch to control write data to database or not,
-  "delete_after": if we need to delete data after reading from redis,
-  "unsub_max_itt":for one try of unsubscribe all, number of itteration,
-  "refetch_ext_list": if we need to refetch latest extraction list from the database,
-  "subscription_chunk": this is used as a data chunker for initializing the extraction, every subscription_chunk will be grouped in one chunk,
-  "heart_beat_name": the heart beat name for each of modules, such as ext 1; ext 2; init ext,
-  "hb_threshold": the threshold of sending the heartbeat, if exceeded, pass renewal code to data smith,
-  "hb_renewal_code": the renewal code defined internally,
-  "haystack_ext_table_name": "hs_points",
-  "latest_hs_points_updated":"2021-04-29 00:44:09",
-  "convention_ext_list": "convention_extraction_list.csv",
-  "combined_hs_conv_ext_list":"combined_hs_conv_ext_list.csv",
-  "extraction_1_duties":["f6b9c110-83da-30ed-91ab-9c3dbd6b108e_updates_300_[0-4]"],
-  "extraction_2_duties":["f6b9c110-83da-30ed-91ab-9c3dbd6b108e_updates_300_[4-9]"],
-  "convention_ext_list_colName":["URI",	"DB_name", "value",	"obj_type",	"controller_id",	"system",	"point_name",	"units",	"extraction_frequency",	"writable",	"COV",	"bk_check",	"internal_index",	"c_id"],
-  "haystack_ext_list_colName":["id","DB_name","equipId","value","kind","units","writable","controller_id","obj_type","URI","addressType","COV","extraction_frequency","maxExtractionFrequency","createdBy","createdAt","updatedBy","updatedAt"],
-  "status_flag_write_to_database":["fault", "alarm", "down"],
-  "write_status_to_database":false,
-  "dest_table":{"haystack":"hs_measures",
-                "convention":"TL_measures"},
-  "merge_key":{"haystack":"id",
-              "convention_or_dual":"internal_index"},
-  "updates_columnNames":{"haystack":["id", "source_ts_utc", "point_value", "status"],
-                        "convention_or_dual":["internal_index", "source_ts_utc", "point_value", "status"]},
-  "variable_columnNames":{"created_by":"created_by",
-                      "source_ts_utc":"source_ts_utc",
-                      "creation_date_utc":"creation_date_utc",
-                      "point_value":"point_value",
-                      "status":"status",
-                      "wave_counter":"wave_counter",
-                      "cov" : "COV",
-                      "controllerId": "controller_id",
-                      "extractionFrequency": "extraction_frequency",
-                      "pointAddress": "URI",
-                      "point_id":"DB_name",
-                      "updatedAt":"updatedAt"},
-  "monitory_name":{
-                  "Extraction_1": "Extraction_1",
-                  "Extraction_2": "Extraction_2"},
-  "keep_keys_status":{
-                  "haystack":["point_value", "status", "URI", "dis"],
-                  "convention":["point_value", "status", "URI", "point_id"]},
-  "keep_ext_list_colNames_to_redis":{"haystack":["id","equipId", "DB_name", "value", "kind", "units",
-                                        "writable", "controller_id","obj_type", "URI", "addressType",
-                                        "COV", "extraction_frequency","maxExtractionFrequency", "createdAt"],
-                                      "dual":["id","equipId", "DB_name", "kind", "units","system", "point_name",
-                                              "writable", "controller_id","obj_type", "URI", "addressType",
-                                              "COV", "extraction_frequency","maxExtractionFrequency", "internal_index"]},
-  "dest_table_keep_colNames":{"haystack":["point_id", "point_value", "wave_counter", "created_by", "creation_date_utc", "source_ts_utc"],
-                              "convention":["point_id", "controller_id", "system_id", "point_name", "point_type", "unit", "point_value", "creation_date_utc", "wave_counter"]},
-  "dest_table_columns":{
-                  "TL_measures":{
-                    "c_id":"controller_id",
-                    "system":"system_id",
-                    "obj_type":"point_type",
-                    "value":"point_value",
-                    "DB_name":"point_id",
-                    "units":"unit"},
-                  "hs_measures":{
-                    "value":"point_value",
-                    "id":"point_id"
-                  },
-                  "extraction_cycle":{
-                    "cycle_duration":"cycle_duration",
-                    "wave_counter":"wave_counter",
-                    "report":"report",
-                    "detailed_report":"detailed_report"}
-   }
+  "init": [if we need to reinit the extraction],
+  "sleep_time": [how long the program sleep for next cycle of extraction],
+  "retry_times": [this give initextraction module chance to retry itself for unsubscribe all],
+  "ext_itt_max":[the max itteration of one cycle in for loop],
+  "debug_mode": [the debug mode boolean],
+  "write_to_db": [the switch to control write data to database or not],
+  "delete_after": [if we need to delete data after reading from redis],
+  "unsub_max_itt": [for one try of unsubscribe all, number of itteration],
+  "refetch_ext_list": [if we need to refetch latest extraction list from the database],
+  "subscription_chunk": [this is used as a data chunker for initializing the extraction, every subscription_chunk will be grouped in one chunk],
+  "heart_beat_name": [the heart beat name for each of modules, such as ext 1; ext 2; init ext],
+  "hb_threshold": [the threshold of sending the heartbeat, if exceeded, pass renewal code to data smith],
+  "hb_renewal_code": [the renewal code defined internally],
+  "haystack_ext_table_name": [the database table name of haystack point, which is the extraction list for haystack mode],
+  "latest_hs_points_updated": [the updated time of the haystack extraction list in database, if the max value in database is greater than this threshold, refetch and resubscribe],
+  "convention_ext_list": [the local csv file name for convention method extraction],
+  "combined_hs_conv_ext_list": [the local csv file name for dual method extraction],
+  "extraction_1_duties": [the duties for extraction 1 module, details refer to section "Frequent scenarios and its measures"],
+  "extraction_2_duties": [the duties for extraction 2 module, details refer to section "Frequent scenarios and its measures"],
+  "convention_ext_list_colName": [this is the column name for convention extraction list, for a reference purpose, make sure the same info between convention and haystack has the same column name],
+  "haystack_ext_list_colName": [this is the column name for haystack extraction list, for a reference purpose, make sure the same info between convention and haystack has the same column name],
+  "status_flag_write_to_database": [this marks the status flag, say, fault, will be written to database, the rest status points will direct to extraction cycle table detail],
+  "write_status_to_database": [are we gonna write the points with status to database? if not, collect them all into the detailed report],
+  "dest_table": [what is the destination pushing database table name for convention and haystack],
+  "merge_key": [what is the key to merge between extraction list and the updates],
+  "updates_columnNames": [what is the column names of the updates for convention and haystack],
+  "variable_columnNames": [contains the column names, which is variable and could be changed later, key is used in program, value is the real name],
+  "monitory_name": [the monitory name for different extraction module, used to differenate the different monitory],
+  "keep_keys_status": [this highlights the most important columns that will be kept for the status point ],
+  "keep_ext_list_colNames_to_redis": [the extraction list columns that will be kept to redis database as reference],
+  "dest_table_keep_colNames": [the column names that used in filtering and accumulating the data points and push to data smith/database, varied by different extraction mode and measures table],
+  "dest_table_columns": [the key:value pair of the replacement of column names between merged ext_list/updates data and database table column name]
 }
 
 ```
