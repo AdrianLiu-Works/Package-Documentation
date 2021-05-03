@@ -92,9 +92,9 @@ The installation follows the general steps:
       6. **service\_creator/service**_**\_**_**CONFIGURATION.json**: the configurations for creating the system service for running the modules on background. Support multiple services creation.
 3. Set up the Redis socket server:
    1. No need to change anything in this step
-   2. Simply run _redisConfiguration/prepare\_redis\_conf.py_ 
+   2. Simply run `python3 redisConfiguration/prepare_redis_conf.py` 
    3. \(when there is a need to stop such server, run _redisConfiguration/steop\_redis\_service.py_, this will not affect the data that already stored in redis database\)
-4. Once you feel confident about the configurations setting, feel free to use sudoer permission to run _service\_creator/service\_creator.py_
+4. Once you feel confident about the configurations setting, feel free to use sudoer permission to run `python3 service_creator/service_creator.py`
 5. After creation of service, it's necessary to do extra quality assurance, which is use command line of `sudo systemctl status yourservicename.service` to check if the service is up and run, in case of failure, run `sudo systemctl restart yourservicename.service`, and recheck the status. If still failed, double check your configurations file.
 
 ### Frequent scenarios and its measures
@@ -116,7 +116,7 @@ Please note that, the program will first check if we are in dual extraction mode
 
 #### Debug mode
 
-The debug mode is available for modules:
+The [debug mode](extraction-module.md#debug-mode-1) is available for modules:
 
 1. Client
 2. Init Extraction/ Extraction
@@ -129,11 +129,37 @@ Once this mode is on, the verbose will be maximized and print every details on e
 By default, each extraction package is equipped with two extraction modules, and their responsibilities was split by the _extraction\_config.json,_ for example, 
 
 1. **"extraction1\_duties":\["f6b9c110-83da-30ed-91ab-9c3dbd6b108e\_updates\_300\_\[0-4\]"\]**
-2. **extraction2\_duties":\["f6b9c110-83da-30ed-91ab-9c3dbd6b108e\_updates\_300\_\[4-9\]"\],**
+2. **extraction2\_duties":\["f6b9c110-83da-30ed-91ab-9c3dbd6b108e\_updates\_300\_\[4-9\]"\]**
+
+Partition explain:
+
+![](.gitbook/assets/image%20%288%29.png)
+
+so, the generic format of extraction duties: **controllerID\_updates\_theIntervalOfUpdates\_theSubscriptionID**
+
+OR 
+
+with [COV ](extraction-module.md#cov-change-of-value)\(change of value\):
+
+**controllerID\_updatestheIntervalOfUpdates\_COV\_theSubscriptionID**
+
+Among them:
+
+1. controller id: offered by driver, the unique id
+2. updates: "updates" field name, no need to change
+3. interval: the interval between two updates, say 5 mins, the driver will send us the latest updates in every 5 mins. Some point may come with different intervals
+4. [subscription ID](extraction-module.md#initialization): the subscription number of the updates, say, we have 9 groups of subscriptions, the duties could be split like above. 
+5. COV: [cov](extraction-module.md#cov-change-of-value)
 
 #### Change of pushing to database size
 
+Under the needs of considering the resource consumption of virtual machine, we configurate the database pushing size to a reasonable number. For example, if the cpu and memory consumption is in a very high level, then we shall reduce the pushing size and let the program do the populating for multiple times in order to flatten the curve. 
+
+In each of Data Smith directory, database pushing size could be found at DS\_config.json, it varies by different data smith. 
+
 #### Extraction only for locally, stop pushing to cloud database
+
+In the special case, there is no need to push the extraction point of values to the database. In the extraction\_config.json, switch write to db option to false. 
 
 ## Functionalities
 
@@ -160,9 +186,11 @@ The examples that covered are:
 3. the number of normal/status updates
 4. which extraction mode is currently on
 5. The offset between creation of updates and creation of database row
-6. CPU/memory consumption
-7. updates with status, if any
-8. current cycle configuration
+6. CPU/memory consumption of this program
+7. CPU/memory consumption machine-wide
+8. updates with status, if any
+9. current cycle configuration
+10. current data smith configuration
 
 ### Memory garbage collection
 
@@ -183,7 +211,7 @@ Two major applications:
 
 This applies to every modules involved in this project, extraction, init\_extration, client, etc. 
 
-The extraction configuration file changes would be immediately effect to the production, for example, while one of the attribute modified in configuration file, the [init\_extraction module](extraction-module.md#modules) will read it and write to redis, which will later be consumed by other program, same for client module.  
+The extraction configuration file changes would be immediately effect to the production, for example, while one of the attribute modified in configuration file, the [init\_extraction module](extraction-module.md#modules) will automatically detect and read it and write to redis, which will later be consumed by other program, same for client module.  
 
 ### Debug mode
 
@@ -193,15 +221,21 @@ With the debug mode on, the module will output the data in every major turning p
 
 ### Push to extraction cycle table even if extraction failed
 
-Even if the extraction of points failed, the module is able to push the error message to the database, along with the extraction mode, 
+Even if the extraction of points failed, the module is able to push the error message to the database, along with the extraction mode, CPU and memory consumption, current configuration, pushing size, etc.
 
 ### Rich options 
 
 #### Write to database
 
+Refer to [here](extraction-module.md#frequent-scenarios-and-its-measures)
+
 #### Delete after read
 
+Instead of deleting the data after reading by default, it is possible that we keep the data there after fetching it, example: the extraction module will remove the updates from redis database after reading, if off, even the data has been read, it will still be kept as it originates.
+
 #### Points with status
+
+[Status points](extraction-module.md#status-points)
 
 1. Whether or not write points with status to database, default at NO, in other words, all points come with status \(abnormal\) will collected into the **detailed report** column in **extraction cycle** table by default
 2. Options to choose which status write to database and rest of them will be kept in the **detailed report** column in **extraction cycle** table 
@@ -209,19 +243,19 @@ Even if the extraction of points failed, the module is able to push the error me
 
 ### Extraction module duties
 
+Refer to [here](extraction-module.md#frequent-scenarios-and-its-measures)
+
 ### Heart beat/modules status
 
 code to reboot
 
 ### Data smith pushing by configurable size
 
+Refer to [here](extraction-module.md#frequent-scenarios-and-its-measures)
+
 ### Auto check the changes in configuration file
 
-
-
-
-
-## Output
+The modules of CLIENT and InitEXTRACTION will check if the configuration file is different with the configuration in the memory, which means the configuration has been updated by a user. The modules will push the latest configuration to the redis memory database for other program to use. 
 
 ## Use cases/Examples
 
@@ -267,6 +301,24 @@ The table that sits in database that responsible to log all the information rela
 The wave counter will be used as a reference to match the updates data back to measures table
 
 ### Heart beat
+
+Heart beat is a concept that we used to keep track of the execution status of each modules inside a package. It offers the maintainers to have visibilities on which service/module is running, and which is possibly down. It also give data smith the opportunities to refresh itself; It works under such cases:
+
+1. after a success execution of main program
+2. while waiting for the results from the driver, it does not insert the hear beat unless the difference between heart beat current time and the latest time in heart beat in memory is over a heart beat threshold \(means the data smith has been IDLE for threshold of time\), and then push the renewal code \(in our case, 100\) to data smith
+3. Once data smith listened a message of renewal code, it will dispose itself engine and recreate a new one. 
+
+### COV \(change of value\)
+
+This tells the driver only send the corresponding point value if and only if the value is changed from last update.
+
+### Release
+
+This will cancel the command that we write to the driver; Likewise, _release\_all_ will wipe out all of current commands. 
+
+### Status points
+
+Normally, each point is supposed to be normal condition, as a result, the update of each points only return the internal id, the wave counter and its point values. However, in such case that the point is not in normal condition, which implies that this point is having "status", it have fourth value in the updates, and it's the representation of the status of that point. As long as status is not empty, it's classified as status/abnormal points. Examples of status: fault, down, alarm, etc. 
 
 ## Configurations
 
