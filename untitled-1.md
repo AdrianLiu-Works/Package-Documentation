@@ -66,14 +66,48 @@ Before deploying the LEA environment to the production, it's required to check t
 
 1. Database tables
    1. for each of schema/project, it's mandatory to have the following tables ready
-      1. audit\_trail
-      2. commands
-      3. extraction\_cycle
-      4. TL\_measures/hs_\__measures \(optional; for haystack mode\)
-      5. hs\_poins \(optional; for haystack mode\)
+      1. **audit\_trail** \(for audit of execution of commands\)
+      2. **commands** \(for records of historical requested commands\)
+      3. **extraction\_cycle** \(for records/information of each extraction cycle\)
+      4. **TL\_measures**/**hs**_**\_**_**measures** \(optional; for haystack mode\)
+      5. **hs\_poins** \(optional; for haystack mode\)
    2. if any of missing, please refer to [this appendix](untitled-1.md#create-statement-for-database-table) section for the _create statement._ 
-   3. if all exists, please use the statement below as reference to correct the project database table to make it standardized. Please note that for table of _**hs points**,_ the order of column names matters.  
-   4. 
+   3. if all exists, please use the statement below as reference to correct the project database table to make it standardized. Please note that for table of _**hs points**,_ the order of columns matters.  
+2. Conventional extraction list policy
+   1. while the extraction list has to be standardized, it's worthy to mention, the extraction list csv file columns have to follow this order
+
+      ```text
+      [
+            "URI",
+            "DB_name",
+            "value",
+            "obj_type",
+            "controller_id",
+            "system",
+            "point_name",
+            "units",
+            "extraction_frequency",
+            "writable",
+            "COV",
+            "internal_index",
+            "c_id"
+         ]
+      ```
+
+      adjust either extraction configuration _convention\_ext\_list\_colName_ attribute or the extraction list csv file. 
+3. LEO environment
+   1. The LEA environment will interact with LEO via the cloud heartbeat of each other. In other words, they will check the heartbeat for each other to see if they are active within a fixed time interval, if not, a safe mode will be triggered and as a result, only the safe mode accepted modules will be allowed to continue running and the rest will be stopped immediately. 
+   2. Deploy LEO environment 
+
+### Prepare
+
+1. Fill the acquired information to BuildingSpecs.json
+2. `sudo python3 Prepare.py` 
+3. a directory with the host name will be created, which contains all the configurations and source codes
+4. change the directory to the host name directory
+5. `sudo python3 Deploy.py` 
+
+### Deploy
 
 ## Understand the Detailed Report in Extraction Cycle
 
@@ -221,11 +255,15 @@ CREATE TABLE `hs_points` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15561 DEFAULT CHARSET=latin1;
 ```
 
+### Deploy LEO environment
 
-
-
-
-
-
-
+1. In order to activate LEO environment, which is majorly deployed in LEA/Calvin VM, it's required to have the related building information handy:
+   1. building id
+   2. device id
+   3. building code
+   4. host name
+   5. database name
+   6. weather station
+   7. database server location
+2. Follow the same procedure of [LEA](untitled-1.md#prepare)
 
