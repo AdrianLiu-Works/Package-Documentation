@@ -97,19 +97,72 @@ Before deploying the LEA environment to the production, it's required to check t
       adjust either extraction configuration _convention\_ext\_list\_colName_ attribute or the extraction list csv file. 
 3. LEO environment
    1. The LEA environment will interact with LEO via the cloud heartbeat of each other. In other words, they will check the heartbeat for each other to see if they are active within a fixed time interval, if not, a safe mode will be triggered and as a result, only the safe mode accepted modules will be allowed to continue running and the rest will be stopped immediately. 
-   2. Deploy LEO environment 
+   2. [Deploy LEO environment ](untitled-1.md#deploy-leo-environment)
+4. Redis server
+   1. check the redis server connection:
+      1. ```text
+         redis-cli ping
+         ```
+
+         it's supposed to return `PONG`
+
+      2. otherwise, please refer to the online tutorial to install redis server to the new VM or direct this request to ECO team.
 
 ### Prepare
 
-1. Fill the acquired information to BuildingSpecs.json
-2. `sudo python3 Prepare.py` 
-3. a directory with the host name will be created, which contains all the configurations and source codes
-4. change the directory to the host name directory
-5. `sudo python3 Deploy.py` 
+We have to collect the related building information to be able to push the modules running. Here is the list of all you need:
+
+1. building host name
+2. device id
+3. database name
+4. database server location
+5. onboarding email list
+6. the database user
+7. the database password
+8. all controller ids in a list format
+9. extraction mode \(dual, convention, or haystack?\)
+10. the extraction list file location \(if convention/dual extraction mode\)
+11. number of points that will be processed by one extraction module \(parallel computing\)
+
+
+
+After acquiring, fill the acquired information to _BuildingSpecs.json,_ follow the indication of the column names. Then  do `sudo python3 Prepare.py` 
 
 ### Deploy
 
+1. a directory with the host name will be created, which contains all the configurations and source codes
+2. change the directory to the host name directory
+3. `sudo python3 Deploy.py` 
+
 ## Understand the Detailed Report in Extraction Cycle
+
+## Use of Offered Tools
+
+### TRIGGER
+
+### redisOverview
+
+discover
+
+set command
+
+unsubscribe all
+
+get config
+
+get session time
+
+get subscription
+
+get write
+
+set commands
+
+set config
+
+set session time
+
+set subscribe
 
 ## Frequent Asked Questions
 
