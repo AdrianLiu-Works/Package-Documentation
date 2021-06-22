@@ -442,7 +442,12 @@ modify based on your need. Example is available in the script.
 
 ## Frequent Asked Questions / Debugging Guide
 
+There are some frequent encountered questions:  
 
+
+* Redis ConnectionError
+  * Symptom: redis.exceptions.ConnectionError: Error 2 connecting to unix socket
+  * Solution: 
 
 ## Appendix
 
