@@ -320,15 +320,37 @@ OR without key/argument
 
 ### RELEASE
 
-This tool will release all the written point values on the driver side by changing the session time \(to be specific, eco session time\). 
+This tool will release all the written point values on the driver side by changing the session time \(to be specific, eco session time\). By referring to _release_, it means that all the points that we wrote to the driver will be erased and the controller will be given back to the BMS system. 
 
 #### how to use
 
+Make sure you are in the `brainbox` permission
 
+`python3 RELEASE.py`
+
+The tool will automatically ensure the success of the release. There is a waiting time for confirming. All the tracked written points will be populated to the database audit trail table with LEA\_release tag if release is success, otherwise, an error will be raised. 
+
+
+
+
+
+**NOTE: ALL THE FOLLOWING TOOLS ARE AVAILABLE INSIDE freqUseCases DIRECTORY**
+
+**USE CASES:**
+
+1. do the additional operations other than the offered functionalities of available running modules
+2. debug the project
+3. other special operations that fits users' needs
 
 ### discover
 
+This tool is used to discover all the possible points that available in the TRIDIUM network. It will be saved as  discovered\_points\_&lt;date of time&gt;.json file under the main directory `./` 
+
+The file will be useful for mapping/creating extraction list purpose
+
 ### set command
+
+
 
 ### unsubscribe all
 
