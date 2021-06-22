@@ -328,11 +328,7 @@ Make sure you are in the `brainbox` permission
 
 `python3 RELEASE.py`
 
-The tool will automatically ensure the success of the release. There is a waiting time for confirming. All the tracked written points will be populated to the database audit trail table with LEA\_release tag if release is success, otherwise, an error will be raised. 
-
- 
-
-
+The tool will automatically ensure the success of the release. There is a waiting time for confirming. All the tracked written points will be populated to the database audit trail table with LEA\_release tag if release is success, otherwise, an error will be raised. \
 
  
 
