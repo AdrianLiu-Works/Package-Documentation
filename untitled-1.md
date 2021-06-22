@@ -358,27 +358,91 @@ The entire process may take up to 10 - 15 mins, depends on the size of the build
 
 ### set command
 
-This tool
+Based on the BrainboxAI Gateway protocol, you can select the commands that you would like to send to the driver and ask it to do the corresponding operations. 
+
+#### how to use it 
+
+`nano set_commands.py`
+
+modify based on your need, make sure the controller id is correct
+
+`python3 set_commands.py`
 
 ### unsubscribe all
 
+This will clear the subscription list on the driver side, as a result, updates will no longer send to our gateway unless the next subscription. 
+
+#### how to use it
+
+`python3 unsubscribe_all.py`
+
 ### get config
+
+This will return the available driver configurations for all controllers, such as version of driver etc. The message will be printed.
+
+#### how to use it
+
+`python3 get_config.py`
 
 ### get session time
 
+This will return the session time for all controllers. The message will be printed
+
+#### how to use it
+
+`python3 get_session_time.py`
+
 ### get subscription
+
+This will return the current subscription list for all controllers, include valid and invalid ones. The message will be printed
+
+#### how to use it
+
+`python3 get_subscription.py`
 
 ### get write
 
-### set commands
+This will return the write points value
+
+#### how to use it
+
+`python3 get_write.py`
 
 ### set config
 
+This will set the different configurations to the driver, such as the max message interval, details could be referred to BrainboxAI Protocol
+
+#### how to use it 
+
+`nano set_config.py`
+
+modify based on your need, note that this will apply changes to all controllers
+
+`python3 set_config.py`
+
 ### set session time
+
+This will set the new cloud/eco session time to the driver. Consequently, all the written points will be released. 
+
+#### how to use it
+
+`python3 set_session_time.py`
 
 ### set subscribe
 
+This will allow the user to subscribe the specific points on the specific controller. 
+
+#### how to use it 
+
+`nano set_subscribe.py`
+
+modify based on your need. Example is available in the script.
+
+`python3 set_subscribe.py`
+
 ## Frequent Asked Questions / Debugging Guide
+
+
 
 ## Appendix
 
