@@ -328,13 +328,15 @@ Make sure you are in the `brainbox` permission
 
 `python3 RELEASE.py`
 
-The tool will automatically ensure the success of the release. There is a waiting time for confirming. All the tracked written points will be populated to the database audit trail table with LEA\_release tag if release is success, otherwise, an error will be raised. \
+The tool will automatically ensure the success of the release. There is a waiting time for confirming. All the tracked written points will be populated to the database audit trail table with LEA\_release tag if release is success, otherwise, an error will be raised. 
 
- \
-
-  \
+ ==============================================================
 
 **NOTE: ALL THE FOLLOWING TOOLS ARE AVAILABLE INSIDE freqUseCases DIRECTORY**
+
+**ALL PERMISSIONS ARE IN brainbox**
+
+**ALL TOOLS WILL PRINT OKAY! AFTER DONE; OTHERWISE AN ERROR**
 
 **USE CASES:**
 
@@ -348,9 +350,15 @@ This tool is used to discover all the possible points that available in the TRID
 
 The file will be useful for mapping/creating extraction list purpose
 
+#### how to use it
+
+`python3 discover_points.py`
+
+The entire process may take up to 10 - 15 mins, depends on the size of the buildings
+
 ### set command
 
-
+This tool
 
 ### unsubscribe all
 
