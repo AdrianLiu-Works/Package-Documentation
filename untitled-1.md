@@ -73,32 +73,10 @@ Before deploying the LEA environment to the production, it's required to check t
       5. **hs\_poins** \(optional; for haystack mode\)
    2. if any of missing, please refer to [this appendix](untitled-1.md#create-statement-for-database-table) section for the _create statement._ 
    3. if all exists, please use the statement below as reference to correct the project database table to make it standardized. Please note that for table of _**hs points**,_ the order of columns matters.  
-2. Conventional extraction list policy
-   1. while the extraction list has to be standardized, it's worthy to mention, the extraction list csv file columns have to follow this order
-
-      ```text
-      [
-            "URI",
-            "DB_name",
-            "value",
-            "obj_type",
-            "controller_id",
-            "system",
-            "point_name",
-            "units",
-            "extraction_frequency",
-            "writable",
-            "COV",
-            "internal_index",
-            "c_id"
-         ]
-      ```
-
-      adjust either extraction configuration _convention\_ext\_list\_colName_ attribute or the extraction list csv file. 
-3. LEO environment
+2. LEO environment
    1. The LEA environment will interact with LEO via the cloud heartbeat of each other. In other words, they will check the heartbeat for each other to see if they are active within a fixed time interval, if not, a safe mode will be triggered and as a result, only the safe mode accepted modules will be allowed to continue running and the rest will be stopped immediately. 
    2. [Deploy LEO environment ](untitled-1.md#deploy-leo-environment)
-4. Redis server
+3. Redis server
    1. check the redis server connection:
       1. ```text
          redis-cli ping
@@ -107,8 +85,64 @@ Before deploying the LEA environment to the production, it's required to check t
          it's supposed to return `PONG`
 
       2. otherwise, please refer to the online tutorial to install redis server to the new VM or direct this request to ECO team.
+4. Extraction list column names
+
+   This is for the standardization/scalability purpose
+
+   1. Convention
+      1. while the extraction list has to be standardized already, it's worthy to mention, the extraction list csv file columns have to follow this order
+
+         ```text
+         [
+               "URI",
+               "DB_name",
+               "value",
+               "obj_type",
+               "controller_id",
+               "system",
+               "point_name",
+               "units",
+               "extraction_frequency",
+               "writable",
+               "COV",
+               "internal_index",
+               "c_id"
+            ]
+         ```
+
+         adjust either extraction configuration _convention\_ext\_list\_colName_ attribute or the extraction list csv file. 
+   2. Haystack
+
+      1. make sure the order and spell of the column names from _hs\_points_ table are strictly obey: 
+
+      ```text
+      [
+            "id",
+            "DB_name",
+            "equipId",
+            "value",
+            "kind",
+            "units",
+            "writable",
+            "controller_id",
+            "obj_type",
+            "URI",
+            "addressType",
+            "COV",
+            "extraction_frequency",
+            "maxExtractionFrequency",
+            "createdBy",
+            "createdAt",
+            "updatedBy",
+            "updatedAt"
+         ]
+      ```
+
+      adjust the database table or  _haystack\_ext\_list\_colName_  attribute in the configuration file, accordingly. 
 
 ### Prepare
+
+NOTE: All the steps conducted in this section is inside `./prototype` directory
 
 We have to collect the related building information to be able to push the modules running. Here is the list of all you need:
 
@@ -116,7 +150,7 @@ We have to collect the related building information to be able to push the modul
 2. device id
 3. database name
 4. database server location
-5. onboarding email list
+5. relevant onboarding email list
 6. the database user
 7. the database password
 8. all controller ids in a list format
@@ -124,47 +158,197 @@ We have to collect the related building information to be able to push the modul
 10. the extraction list file location \(if convention/dual extraction mode\)
 11. number of points that will be processed by one extraction module \(parallel computing\)
 
-
-
-After acquiring, fill the acquired information to _BuildingSpecs.json,_ follow the indication of the column names. Then  do `sudo python3 Prepare.py` 
+After acquiring, fill the acquired information to _BuildingSpecs.json,_ follow the indication of the column names. Then  do `sudo python3 PrepareDeployment.py`, this will create a directory with the host name, which contains all the configurations and source codes. 
 
 ### Deploy
 
-1. a directory with the host name will be created, which contains all the configurations and source codes
-2. change the directory to the host name directory
-3. `sudo python3 Deploy.py` 
+NOTE: All the steps conducted in this section is inside `./the_building_host_name` directory
 
-## Understand the Detailed Report in Extraction Cycle
+After preparing for the source code and configurations, we shall proceed to the next step.
+
+1. change the directory to the host name directory
+2. `sudo ./TRIGGER.py deploy`
+3. all services that are specified in the _SystemConfig.json_ will be created a system service, all information in _BuildingSpecs.json_ and extraction list directory will be emptied, as well as the database credentials that sit in the _specs.json_
+4. under the same directory, do `sudo ./TRIGGER.py freshstart LEA` to do a freshstart over LEA, a message of "redis\_custom.conf is created!" will pop up if success, which indicates the success running of both LEA layer and the project redis
+5. LEA will start the required/rest modules on its own, such as extraction, data smith, chart smith, etc. 
+
+## Understand the Report in Extraction Cycle
+
+### Flag
+
+This will indicate the success of the extraction
+
+### Num Updates to DB
+
+This will indicate the number of updates that are pushed to database
+
+### Num Updates Status
+
+This will indicate the number of updates with status that are **NOT** pushed to database. They will be stored in the detailed report blob object. By default, all status points value will be pushed to database
+
+This could be enabled/disabled by switching the attribute _write status to db_ from true to false, then all status will be directed to detailed report blob object instead of pushing to db. 
+
+### Num Updates Null
+
+This will indicate the number of updates with null values. This is by default filtering all null values to the detailed report blob object. So when querying the specific point that with null values, it won't be in the database. 
+
+### Script N
+
+This will indicate which extraction module runs this cycle.
+
+### Ext Mode
+
+This will indicate which extraction mode are we in, options: conventional, haystack, dual
+
+### Error Message
+
+For each of extraction cycle, if no errors occurred, it will indicate no error message; Otherwise, it will print the shorten format of the traceback message
+
+### Offset
+
+This indicates the offset time between our current unix time and the updates unix time. This will explain the freshness of the updates. The number means how long does the driver take to send us the updates. Negative number or incredible number implies the clocking sync issue on Client side. If necessary, please advice the Client to reset their system clock. 
+
+### Logging
+
+This offers a more detailed error message \(if applicable\) of **each steps** that the extraction pipeline/cycle went through. This is also the good reference to check which step cause the issue and what the error message is.
+
+### CPU Consumption
+
+This indicates the CPU consumption of this specific extraction cycle
+
+### Memory Consumption
+
+This indicates the Memory consumption of this specific extraction cycle
+
+### Current Overall CPU percentage
+
+This indicates the CPU consumption of the entire VM. Note that the higher overall CPU percentage will result in lower processing time and longer time in each of extraction cycle
+
+### Current Overall Memory percentage
+
+This indicates the Memory consumption of the entire VM
+
+### Updates with Status
+
+The updates that come with status. This will be intentionally empty if the _write status to db_ is **False.** Otherwise, all the updates with status will transferring here. 
+
+### Updates with Null
+
+The updates that come with value Null. This will by default stored all the null updates.
+
+### Extraction Config
+
+The specific configuration for this extraction cycle
+
+### Data Smith Config
+
+The specific configuration for the data smith of this extraction cycle
+
+## Understand the Message in LEA Safe Mode Email Notification 
+
+LEA will go to safe mode if one of the following circumstances are met:
+
+1. one of the running modules is down \(by checking the status of the module service\)
+2. heartbeat from server/LEO is missing within a certain time interval
+3. connection to database cannot be established
+
+In such case, the LEA module will notify the people in the mailing list about the triggering of safe mode. The body text will also include the tail of the LEA log message so that the receivers are able to refer to it and debug the modules, this is a preventive measure that the LEA log are cleared.  
 
 ## Use of Offered Tools
 
+All following tools are independent python scripts
+
 ### TRIGGER
+
+This tool is the main one that covers all the possible operations to the **modules service** in our use cases. 
+
+#### it offers 
+
+1. '**start**': start the modules
+2. '**freshstart**': start the module that is first time running; exclusive for LEA
+3. '**stop**': stop the modules
+4. '**restart**':  restart the modules
+5. '**deploy**': deploy \(create the system service\) the modules
+6. '**view**': print the tail of the service log
+7. '**status**': print the status of the service
+8. '**safe**': convert the module to safe mode; exclusive for LEA
+
+#### how to use
+
+`sudo ./TRIGGER.py <options> <modules_name>`
+
+for example:  `sudo ./TRIGGER.py freshstart LEA`
 
 ### redisOverview
 
-discover
+This tool mainly covers all the possible operations to the **project redis server** in our use cases. This is also a debugging tool to check the status of each attribute and make sure they are updated timely or not lost or not never there. 
 
-set command
+#### it offers
 
-unsubscribe all
+1. '-k' or '--key':  show the content of the key
+2. '-s' or '--status': show status of given argument
+3. '-a' or '--arg': specify the argument for a key, fetched in the format of hashmap
+4. '-n' or '--keyarg': return all keys that is being fetched from a hashmap
+5. '-ak' or '--allkey': print all keys in redis
+6. '-m' or '--memory': print the memory for the given key
+7. '-ms' or '--memoryStats': display the memory statistics 
+8. '-del' or '--deletekey': delete a given key
 
-get config
+#### how to use
 
-get session time
+Make sure you are in the `brainbox` permission
 
-get subscription
+`python3 redisOverview.py <options> <key(optional)>`
 
-get write
+for example: 
 
-set commands
+with key
 
-set config
+`python3 redisOverview.py -k 234fv2-32f2-wrbtywee-234v4_current`_`_`_`time -a 234fv2-32f2-wrbtywee-234v4_creation_time_utc` 
 
-set session time
+OR without key/argument
 
-set subscribe
+`python3 redisOverview.py -ms`
 
-## Frequent Asked Questions
+#### frequent use case
+
+1. check if the controller id current time is changing \(means CLIENT and driver are working properly\)
+2. check if the heart beat of each module is updating \(means the modules services are running\)
+3. check if all keys are available \(means CLIENT is working fine\)
+4. check the data
+5. remove a no longer needed key 
+
+### RELEASE
+
+This tool will release all the written point values on the driver side by changing the session time \(to be specific, eco session time\). 
+
+#### how to use
+
+
+
+### discover
+
+### set command
+
+### unsubscribe all
+
+### get config
+
+### get session time
+
+### get subscription
+
+### get write
+
+### set commands
+
+### set config
+
+### set session time
+
+### set subscribe
+
+## Frequent Asked Questions / Debugging Guide
 
 ## Appendix
 
