@@ -477,6 +477,62 @@ Check the error message and look into what causes the issue.
 
 Report to [Jason ](mailto:%20j.kimmerling@brainboxai.com)for first tier of check if issue remains
 
+### One/more of the dependent modules are not running after LEA freshstarted \(LEA started and is running\)
+
+#### Symptom
+
+After deploying LEA service, checking the service status gives **inactive/exited.**
+
+#### **Solution**
+
+LEA will take time to start all the service, roughly up to 5 mins. Chill and come back after 5 mins and recheck. 
+
+If still, try to restart the service`sudo ./TRIGGER.py restart <service_name>   OR   sudo systemctl restart <service_name>_<building_name>.service`
+
+If still not working, or the status switched to **exited**
+
+`sudo ./TRIGGER.py view <service_name>   OR   sudo journalctl -u <service_name>_<building_name>.service`
+
+This will print the tail of the service log
+
+Check the error message and look into what causes the issue.
+
+Report to [Jason ](mailto:%20j.kimmerling@brainboxai.com)for first tier of check if issue remains
+
+### The number of points in extraction list mismatched the number of updates
+
+Ask two questions to yourself:
+
+1. do I have any COV point in the extraction list?
+   1. if so, does the number match if COV points are included?
+2. do I have any invalid subscriptions?
+   1. during the initialization of the extraction, the person who are in the mailing list are supposed to receive the confirmation email with invalid subscriptions \(if applicable\). If you are not in the list, go to step 2
+   2. by checking the invalid subscriptions: 
+      1. brainbox permission
+      2. `python3 redisOverview.py -k <controller_id>_errors`
+      3. check if we have the invalid subscriptions points message there
+      4. the **code** of the message is invalid\_subscriptions
+      5. be caution of the error message time, it will be retained for 7 days.
+
+### LEA emailed me that it went to the SAFE MODE
+
+The LEA module will attach the tail of its log and email to the mailing list. Please take some time and read it though. It will highly likely indicate the which part causes the problem, it may include but not limited to:
+
+1. one of dependent modules \(extraction, data smith, etc\) are inactive/down
+2. one of dependent modules stop sending heartbeat \(may due to first one\)
+3. LEO/server/algo stopped working
+4. connection to database cannot be established
+
+Then, dig deep into the inactive module and check the log. 
+
+Under the main directory of the project
+
+`sudo ./TRIGGER.py view <service_name>   OR   sudo journalctl -u <service_name>_<building_name>.service`
+
+Make an attempt to debug
+
+Report to [Jason ](mailto:%20j.kimmerling@brainboxai.com)for first tier of check if issue remains
+
 ## Appendix
 
 ### Create statement for database table
