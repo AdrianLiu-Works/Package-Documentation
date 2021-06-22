@@ -72,7 +72,7 @@ Before deploying the LEA environment to the production, it's required to check t
       4. **TL\_measures**/**hs**_**\_**_**measures** \(optional; for haystack mode\)
       5. **hs\_poins** \(optional; for haystack mode\)
    2. if any of missing, please refer to [this appendix](untitled-1.md#create-statement-for-database-table) section for the _create statement._ 
-   3. if all exists, please use the statement below as reference to correct the project database table to make it standardized. Please note that for table of _**hs points**,_ the order of columns matters.  
+   3. if all exists, please use the statement below as reference to correct the project database table to make it standardized. Please note that for table of _**hs points**,_ the order of columns matters \(point 4\).  
 2. LEO environment
    1. The LEA environment will interact with LEO via the cloud heartbeat of each other. In other words, they will check the heartbeat for each other to see if they are active within a fixed time interval, if not, a safe mode will be triggered and as a result, only the safe mode accepted modules will be allowed to continue running and the rest will be stopped immediately. 
    2. [Deploy LEO environment ](untitled-1.md#deploy-leo-environment)
@@ -146,17 +146,17 @@ NOTE: All the steps conducted in this section is inside `./prototype` directory
 
 We have to collect the related building information to be able to push the modules running. Here is the list of all you need:
 
-1. building host name
-2. device id
-3. database name
-4. database server location
-5. relevant onboarding email list
-6. the database user
+1. building host name: _e.g. US-OWI-DSB-100PaintersMill-01-TRIDIUM_
+2. device id: _e.g. 199_
+3. database name: _e.g. US-OWI-DSB-100PaintersMill_
+4. database server location: _e.g. ca_
+5. relevant onboarding email list: _e.g. p.qu@brainboxai.com_
+6. the database user: _e.g. extraction_
 7. the database password
-8. all controller ids in a list format
+8. all controller ids in a list format: _e.g. \['32c17fe5-021e-382f-bdeb-5ac7fff408b4', 'p44t7fe5-021e-382f-bdeb-5ac7fff408b4'\]_
 9. extraction mode \(dual, convention, or haystack?\)
-10. the extraction list file location \(if convention/dual extraction mode\)
-11. number of points that will be processed by one extraction module \(parallel computing\)
+10. the extraction list file location \(if convention/dual extraction mode\): _e.g. /home/brainbox/TRIDIUM-LEA/prototype/extraction\_lists/BROWNS\_ext\_list.csv \(naming by your choice\)_
+11. number of points that will be processed by one extraction module \(parallel computing\) _e.g. 3000_
 
 After acquiring, fill the acquired information to _BuildingSpecs.json,_ follow the indication of the column names. Then  do `sudo python3 PrepareDeployment.py`, this will create a directory with the host name, which contains all the configurations and source codes. 
 
@@ -167,16 +167,20 @@ NOTE: All the steps conducted in this section is inside `./the_building_host_nam
 After preparing for the source code and configurations, we shall proceed to the next step.
 
 1. change the directory to the host name directory
-2. `sudo ./TRIGGER.py deploy`
+2. `sudo ./TRIGGER.py deploy   OR   sudo python3 DEPLOY.py`
 3. all services that are specified in the _SystemConfig.json_ will be created a system service, all information in _BuildingSpecs.json_ and extraction list directory will be emptied, as well as the database credentials that sit in the _specs.json_
 4. under the same directory, do `sudo ./TRIGGER.py freshstart LEA` to do a freshstart over LEA, a message of "redis\_custom.conf is created!" will pop up if success, which indicates the success running of both LEA layer and the project redis
 5. LEA will start the required/rest modules on its own, such as extraction, data smith, chart smith, etc. 
+
+
+
+Until here, the LEA environment is supposed to be set and move forward to next step. 
 
 ## Understand the Report in Extraction Cycle
 
 ### Flag
 
-This will indicate the success of the extraction
+This will indicate the success of the extraction; in other words, even if the extraction failed, it will push the error message to the database for debugging purpose
 
 ### Num Updates to DB
 
@@ -256,7 +260,7 @@ In such case, the LEA module will notify the people in the mailing list about th
 
 ## Use of Offered Tools
 
-All following tools are independent python scripts
+All following tools are independent python scripts and ready-to-go
 
 ### TRIGGER
 
@@ -281,7 +285,7 @@ for example:  `sudo ./TRIGGER.py freshstart LEA`
 
 ### redisOverview
 
-This tool mainly covers all the possible operations to the **project redis server** in our use cases. This is also a debugging tool to check the status of each attribute and make sure they are updated timely or not lost or not never there. 
+This tool mainly covers all the possible operations to the **project redis socket** in our use cases. This is also a debugging tool to check the status of each attribute and make sure they are updated timely or not lost or not never there. 
 
 #### it offers
 
@@ -304,7 +308,7 @@ for example:
 
 with key
 
-`python3 redisOverview.py -k 234fv2-32f2-wrbtywee-234v4_current`_`_`_`time -a 234fv2-32f2-wrbtywee-234v4_creation_time_utc` 
+`python3 redisOverview.py -k 234fv2-32f2-wrbtywee-234v4_current_time -a 234fv2-32f2-wrbtywee-234v4_creation_time_utc`
 
 OR without key/argument
 
@@ -315,7 +319,7 @@ OR without key/argument
 1. check if the controller id current time is changing \(means CLIENT and driver are working properly\)
 2. check if the heart beat of each module is updating \(means the modules services are running\)
 3. check if all keys are available \(means CLIENT is working fine\)
-4. check the data
+4. check any available data
 5. remove a no longer needed key 
 
 ### RELEASE
@@ -330,13 +334,13 @@ Make sure you are in the `brainbox` permission
 
 The tool will automatically ensure the success of the release. There is a waiting time for confirming. All the tracked written points will be populated to the database audit trail table with LEA\_release tag if release is success, otherwise, an error will be raised. 
 
- ==============================================================
+ ==================================================================
 
 **NOTE: ALL THE FOLLOWING TOOLS ARE AVAILABLE INSIDE freqUseCases DIRECTORY**
 
 **ALL PERMISSIONS ARE IN brainbox**
 
-**ALL TOOLS WILL PRINT OKAY! AFTER DONE; OTHERWISE AN ERROR**
+**ALL TOOLS WILL PRINT 'OKAY!' AFTER DONE; OTHERWISE AN ERROR**
 
 **USE CASES:**
 
@@ -442,8 +446,7 @@ modify based on your need. Example is available in the script.
 
 ## Frequent Asked Questions / Debugging Guide
 
-There are some frequent encountered questions:  
-
+There are some frequent encountered questions:
 
 ### **Redis ConnectionError**
 
