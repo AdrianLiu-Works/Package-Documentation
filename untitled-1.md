@@ -265,8 +265,8 @@ This tool is the main one that covers all the possible operations to the **modul
 #### it offers 
 
 1. '**start**': start the modules
-2. '**freshstart**': start the module that is first time running; exclusive for LEA
-3. '**stop**': stop the modules
+2. '**freshstart**': start the module that is first time running; exclusive for LEA; it will also activate the project redis socket at the same time.
+3. '**stop**': stop the modules; if stop LEA, redis socket will be stopped too.
 4. '**restart**':  restart the modules
 5. '**deploy**': deploy \(create the system service\) the modules
 6. '**view**': print the tail of the service log
@@ -445,9 +445,37 @@ modify based on your need. Example is available in the script.
 There are some frequent encountered questions:  
 
 
-* Redis ConnectionError
-  * Symptom: redis.exceptions.ConnectionError: Error 2 connecting to unix socket
-  * Solution: 
+### **Redis ConnectionError**
+
+#### Symptom
+
+redis.exceptions.ConnectionError: Error 2 connecting to unix socket
+
+#### Solution \(assuming you are in the main directory of the project\)
+
+* `sudo su brainbox`
+* `python3 ./redisConfiguration/prepare_redis_conf.py`
+* rerun the code
+
+### LEA module is not starting after [TRIGGER freshstart](untitled-1.md#trigger)
+
+#### Symptom
+
+the service is inactive and disabled via `systemctl status sevice_name.service`
+
+#### Solution
+
+`sudo systemctl start LEA_<building_name>.service`
+
+If still not working, or the status switched to **exited**
+
+`sudo ./TRIGGER.py view LEA   OR   sudo journalctl -u LEA_<building_name>.service`
+
+This will print the tail of the LEA log
+
+Check the error message and look into what causes the issue.
+
+Report to [Jason ](mailto:%20j.kimmerling@brainboxai.com)for first tier of check if issue remains
 
 ## Appendix
 
