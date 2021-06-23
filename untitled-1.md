@@ -2,7 +2,7 @@
 
 ## What is LEA?
 
-LEA serves as a management layer to oversee the status of all services under this project. If one of the service failed and went down, the LEA will order this project to turn on the safe mode, which is directly off all services except Extraction and Data Smith. By doing so, LEA offers an additional safety layer to command the building.
+LEA serves as a management layer to oversee the status of all services under this project. If one of the service failed and went down, the LEA will order this project to turn on the safe mode, which is directly off all services except Extraction and Data Smith \(configurable\). By doing so, LEA offers an additional safety layer to command the building.
 
 ## What is LEA Environment for TRIDIUM?
 
@@ -74,7 +74,7 @@ Before deploying the LEA environment to the production, it's required to check t
    2. if any of missing, please refer to [this appendix](untitled-1.md#create-statement-for-database-table) section for the _create statement._ 
    3. if all exists, please use the statement below as reference to correct the project database table to make it standardized. Please note that for table of _**hs points**,_ the order of columns matters \(point 4\).  
 2. LEO environment
-   1. The LEA environment will interact with LEO via the cloud heartbeat of each other. In other words, they will check the heartbeat for each other to see if they are active within a fixed time interval, if not, a safe mode will be triggered and as a result, only the safe mode accepted modules will be allowed to continue running and the rest will be stopped immediately. 
+   1. The LEA environment will interact with LEO via the **cloud heartbeat** of each other \(by building id\). In other words, they will check the heartbeat for each other to see if they are active within a fixed time interval, if not, a safe mode will be triggered and as a result, only the safe mode accepted modules will be allowed to continue running and the rest will be stopped immediately. 
    2. [Deploy LEO environment ](untitled-1.md#deploy-leo-environment)
 3. Redis server
    1. check the redis server connection:
@@ -87,7 +87,7 @@ Before deploying the LEA environment to the production, it's required to check t
       2. otherwise, please refer to the online tutorial to install redis server to the new VM or direct this request to ECO team.
 4. Extraction list column names
 
-   This is for the standardization/scalability purpose
+   _This is for the standardization/scalability purpose_
 
    1. Convention
       1. while the extraction list has to be standardized already, it's worthy to mention, the extraction list csv file columns have to follow this order
@@ -142,35 +142,46 @@ Before deploying the LEA environment to the production, it's required to check t
 
 ### Prepare
 
-NOTE: All the steps conducted in this section is inside `./prototype` directory
+**NOTE**: All the steps conducted in this section is inside `./prototype` directory
 
 We have to collect the related building information to be able to push the modules running. Here is the list of all you need:
 
-1. building host name: _e.g. US-OWI-DSB-100PaintersMill-01-TRIDIUM_
-2. device id: _e.g. 199_
-3. database name: _e.g. US-OWI-DSB-100PaintersMill_
-4. database server location: _e.g. ca_
-5. relevant onboarding email list: _e.g. p.qu@brainboxai.com_
-6. the database user: _e.g. extraction_
+1. building host name: 
+   1. _e.g. US-OWI-DSB-100PaintersMill-01-TRIDIUM_
+2. device id: 
+   1. _e.g. 199_
+3. database name: 
+   1. _e.g. US-OWI-DSB-100PaintersMill_
+4. database server location: 
+   1. _e.g. ca_
+5. relevant onboarding email list: 
+   1. _e.g. p.qu@brainboxai.com_
+6. the database user: 
+   1. _e.g. extraction_
 7. the database password
-8. all controller ids in a list format: _e.g. \['32c17fe5-021e-382f-bdeb-5ac7fff408b4', 'p44t7fe5-021e-382f-bdeb-5ac7fff408b4'\]_
+8. all controller ids in a list format: 
+   1. _e.g. \['32c17fe5-021e-382f-bdeb-5ac7fff408b4', 'p44t7fe5-021e-382f-bdeb-5ac7fff408b4'\]_
 9. extraction mode \(dual, convention, or haystack?\)
-10. the extraction list file location \(if convention/dual extraction mode\): _e.g. /home/brainbox/TRIDIUM-LEA/prototype/extraction\_lists/BROWNS\_ext\_list.csv \(naming by your choice\)_
-11. number of points that will be processed by one extraction module \(parallel computing\) _e.g. 3000_
+10. the extraction list file location \(if convention/dual extraction mode\): 
+    1. _e.g. /home/brainbox/TRIDIUM-LEA/prototype/extraction\_lists/BROWNS\_ext\_list.csv \(naming by your choice\)_
+11. number of points that will be processed by one extraction module \(parallel computing\) 
+    1. _e.g. 3000_
 
-After acquiring, fill the acquired information to _BuildingSpecs.json,_ follow the indication of the column names. Then  do `sudo python3 PrepareDeployment.py`, this will create a directory with the host name, which contains all the configurations and source codes. 
+After acquiring, fill the acquired information to _BuildingSpecs.json,_ follow the indication of the column names. Then  do `sudo python3 PrepareDeployment.py`, this will create a directory with the **host name**, which contains all the configurations and source codes. 
 
 ### Deploy
 
-NOTE: All the steps conducted in this section is inside `./the_building_host_name` directory
+**NOTE**: All the steps conducted in this section is inside `./the_building_host_name` directory
 
-After preparing for the source code and configurations, we shall proceed to the next step.
+After preparing for the source code and configurations from last step, we shall proceed to the next step.
 
 1. change the directory to the host name directory
 2. `sudo ./TRIGGER.py deploy   OR   sudo python3 DEPLOY.py`
 3. all services that are specified in the _SystemConfig.json_ will be created a system service, all information in _BuildingSpecs.json_ and extraction list directory will be emptied, as well as the database credentials that sit in the _specs.json_
-4. under the same directory, do `sudo ./TRIGGER.py freshstart LEA` to do a freshstart over LEA, a message of "redis\_custom.conf is created!" will pop up if success, which indicates the success running of both LEA layer and the project redis
-5. LEA will start the required/rest modules on its own, such as extraction, data smith, chart smith, etc. 
+4. under the same directory, do `sudo ./TRIGGER.py freshstart LEA` to do a freshstart over LEA, a message of "LEA freshstarted!!" will pop up if success, which indicates the success running of both LEA layer and the project redis
+5. once LEA is started, it will start the required/rest modules on its own, such as extraction, data smith, chart smith, etc. 
+6. monitor the running status of all available modules
+7. if any of them not working properly, refer to [troubleshooting ](untitled-1.md#one-more-of-the-dependent-modules-are-not-running-after-lea-freshstarted-lea-started-and-is-running)section
 
 
 
@@ -184,7 +195,7 @@ This will indicate the success of the extraction; in other words, even if the ex
 
 ### Num Updates to DB
 
-This will indicate the number of updates that are pushed to database
+This will indicate the number of updates that are pushed to database; useful for verifying the number of updates and number of extraction list
 
 ### Num Updates Status
 
