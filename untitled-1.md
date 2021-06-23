@@ -308,6 +308,7 @@ This tool mainly covers all the possible operations to the **project redis socke
 6. '-m' or '--memory': print the memory for the given key
 7. '-ms' or '--memoryStats': display the memory statistics 
 8. '-del' or '--deletekey': delete a given key
+9. '-h' or '--help': display all the optional and explanation
 
 #### how to use
 
@@ -469,7 +470,7 @@ redis.exceptions.ConnectionError: Error 2 connecting to unix socket
 
 * `sudo su brainbox`
 * `python3 ./redisConfiguration/prepare_redis_conf.py`
-* rerun the code
+* rerun the code \(or TRIGGER freshstart LEA again\)
 
 ### LEA module is not starting after [TRIGGER freshstart](untitled-1.md#trigger)
 
